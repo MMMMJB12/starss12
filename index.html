@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز النجوم للإلكترونيات | النجف الأشرف</title>
+    <!-- استيراد خط تجوال وكايرو من Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- مكتبة الأيقونات Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        psDark: '#050811',
+                        psBlue: '#0070D1',
+                        psCyan: '#00E5FF',
+                        psGlass: 'rgba(15, 23, 42, 0.65)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* إعدادات عامة وتأثيرات البلايستيشن */
+        body {
+            background-color: #040710;
+            color: #f8fafc;
+            font-family: 'Cairo', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(0, 112, 209, 0.22) 0%, transparent 45%),
+                radial-gradient(circle at 85% 75%, rgba(0, 229, 255, 0.15) 0%, transparent 45%),
+                linear-gradient(180deg, #03060e 0%, #091124 50%, #040710 100%);
+        }
+
+        /* جزيئات الخلفية المتحركة مثل PS5 */
+        .ps-particles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.6) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: floatUp linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) scale(0.5); opacity: 0; }
+            20% { opacity: 0.7; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* زجاجية PS5 Glassmorphism */
+        .ps-glass {
+            background: rgba(13, 20, 38, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+        }
+
+        .ps-card-hover {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .ps-card-hover:hover {
+            transform: translateY(-4px) scale(1.01);
+            border-color: rgba(0, 229, 255, 0.5);
+            box-shadow: 0 12px 28px rgba(0, 112, 209, 0.35), 0 0 15px rgba(0, 229, 255, 0.2);
+        }
+
+        /* أيقونات شريط XMB العلوي */
+        .xmb-item {
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        .xmb-item.active {
+            transform: scale(1.12);
+            background: linear-gradient(135deg, rgba(0, 112, 209, 0.35), rgba(0, 229, 255, 0.2));
+            border-color: #00E5FF;
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.4);
+        }
+        .xmb-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 20%;
+            width: 60%;
+            height: 3px;
+            background: #00E5FF;
+            border-radius: 99px;
+            box-shadow: 0 0 10px #00E5FF;
+        }
+
+        /* شريط تقدم المساحة */
+        .storage-bar-fill {
+            background: linear-gradient(90deg, #005bb5 0%, #0095ff 50%, #00E5FF 100%);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* حركة الصندوق الغامض 3D */
+        @keyframes chestFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+        @keyframes chestShake {
+            0%, 100% { transform: rotate(0deg) scale(1.05); }
+            20% { transform: rotate(-6deg) scale(1.08); }
+            40% { transform: rotate(6deg) scale(1.1); }
+            60% { transform: rotate(-6deg) scale(1.12); }
+            80% { transform: rotate(6deg) scale(1.08); }
+        }
+        .chest-idle {
+            animation: chestFloat 3.5s ease-in-out infinite;
+        }
+        .chest-opening {
+            animation: chestShake 0.8s ease-in-out infinite;
+        }
+
+        /* حركة شريط الإعلانات المتحرك (Ticker) */
+        @keyframes marqueeRTL {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .animate-ticker {
+            display: inline-block;
+            white-space: nowrap;
+            animation: marqueeRTL 28s linear infinite;
+        }
+        .animate-ticker:hover {
+            animation-play-state: paused;
+        }
+
+        /* حركة التكبير السينمائي البطيء للخلفية (Ken Burns Effect) */
+        @keyframes cinematicZoom {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.09) translate(-1%, -1%); }
+            100% { transform: scale(1) translate(0, 0); }
+        }
+        .animate-cinematic-bg {
+            animation: cinematicZoom 24s ease-in-out infinite;
+        }
+
+        /* شريط تمرير مخصص */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #050811; }
+        ::-webkit-scrollbar-thumb { background: #1e3a8a; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00E5FF; }
+
+        /* إخفاء شريط التمرير الأفقي في الجوال مع إبقاء التمرير */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="relative selection:bg-cyan-500 selection:text-slate-950">
+
+    <!-- خلفية سينمائية متحركة للعبة God of War Ragnarök (تدعم images/bg.jpg + بديل فوري مضمون) -->
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <img id="globalHeroBg" 
+             src="images/bg.jpg" 
+             onerror="if(window.handleBgFallback){handleBgFallback(this);}else{this.style.display='none';}" 
+             alt="God of War Ragnarok Background" 
+             class="w-full h-full object-cover object-center opacity-20 animate-cinematic-bg">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#040710]/85 via-[#040710]/80 to-[#040710]"></div>
+    </div>
+
+    <!-- خلفية الجزيئات الضوئية -->
+    <div class="ps-particles" id="particlesContainer"></div>
+
+    <!-- إشعار نظام البلايستيشن (Console Toast Notification) -->
+    <div id="psToast" class="fixed top-24 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-4">
+        <div class="ps-glass border border-cyan-400/60 px-5 py-3 rounded-2xl flex items-center gap-3 shadow-[0_0_30px_rgba(0,229,255,0.3)]">
+            <div class="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400">
+                <i id="toastIcon" class="ph-fill ph-info text-xl"></i>
+            </div>
+            <div>
+                <p id="toastTitle" class="text-xs text-cyan-300 font-bold">إشعار النظام</p>
+                <p id="toastMsg" class="text-sm text-white font-semibold">تم تنفيذ العملية بنجاح</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- شريط الإعلانات المتحرك العلوي (Ticker) -->
+    <div class="bg-gradient-to-r from-blue-950 via-cyan-950 to-blue-950 border-b border-cyan-500/30 py-1.5 overflow-hidden relative z-40">
+        <div class="animate-ticker text-xs font-extrabold text-cyan-300 tracking-wide">
+            🔥 عرض خاص: سعر تحميل أي لعبة بـ 1,000 دينار عراقي فقط! &nbsp;&nbsp;•&nbsp;&nbsp; 🎮 مكتبة تضم أكثر من 400 لعبة حديثة وكلاسيكية لـ PS4 / PS5 / PC &nbsp;&nbsp;•&nbsp;&nbsp; 🛠️ صيانة احترافية وتبديل معجون حراري أصلي Arctic MX-4 &nbsp;&nbsp;•&nbsp;&nbsp; 📍 النجف الأشرف - حي السلام &nbsp;&nbsp;•&nbsp;&nbsp; 📲 اطلب لعبتك أو احجز صيانتك مباشرة عبر واتساب 07840022295
+        </div>
+    </div>
+
+    <!-- الشريط العلوي لنظام البلايستيشن (Top Console Status Bar) -->
+    <header class="sticky top-0 z-40 ps-glass border-b border-white/10 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <!-- شعار المحل وحالة الاتصال -->
+            <div class="flex items-center gap-3">
+                <div class="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-400 flex items-center justify-center shadow-[0_0_20px_rgba(0,229,255,0.4)]">
+                    <i class="ph-fill ph-game-controller text-2xl text-slate-950"></i>
+                    <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-950 rounded-full" title="متصل الآن"></span>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-base sm:text-lg font-extrabold tracking-wide text-white">مركز النجوم للإلكترونيات</h1>
+                        <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+                            <i class="ph-fill ph-map-pin"></i> النجف - حي السلام
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-400 flex items-center gap-2">
+                        <span class="text-emerald-400 font-semibold">● مفتوح لاستقبال الأجهزة</span>
+                        <span>|</span>
+                        <span>400+ لعبة • صيانة احترافية • تعديل أنظمة</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- أزرار التفاعل السريع + الساعة + زر الصوت -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- زر سلة الهارد السريع -->
+                <button onclick="switchTab('storage')" class="relative p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-white/10 text-amber-400 transition" title="سلة الهارد والألعاب">
+                    <i class="ph-fill ph-hard-drives text-lg"></i>
+                    <span id="headerCartBadge" class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-cyan-400 text-slate-950 text-[11px] font-black flex items-center justify-center">0</span>
+                </button>
+
+                <!-- زر تفعيل/كتم أصوات النظام -->
+                <button id="soundToggleBtn" onclick="toggleSound()" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-white/10 text-cyan-400 transition" title="مؤثرات صوت النظام">
+                    <i id="soundIcon" class="ph-fill ph-speaker-high text-lg"></i>
+                </button>
+
+                <!-- زر واتساب سريع -->
+                <a href="https://wa.me/9647840022295?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20%D9%85%D8%B1%D9%83%D8%B2%20%D8%A7%D9%84%D9%86%D8%AC%D9%88%D9%85%D8%8C%20%D8%B9%D9%86%D8%AF%D9%8A%20%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1" target="_blank" onclick="playClickSound()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-600/90 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-[0_0_15px_rgba(16,185,129,0.3)] transition">
+                    <i class="ph-fill ph-whatsapp-logo text-lg"></i>
+                    <span class="hidden md:inline">07840022295</span>
+                </a>
+
+                <!-- زر اتصال مباشر -->
+                <a href="tel:+9647840022295" onclick="playClickSound()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-600/90 hover:bg-blue-500 text-white text-xs sm:text-sm font-bold shadow-[0_0_15px_rgba(37,99,235,0.3)] transition">
+                    <i class="ph-fill ph-phone-call text-lg"></i>
+                    <span class="hidden md:inline">اتصال</span>
+                </a>
+
+                <!-- ساعة النظام الحية -->
+                <div class="hidden lg:flex flex-col items-end pl-2 border-r border-white/10 pr-3">
+                    <span id="liveClock" class="text-sm font-extrabold text-cyan-300 tracking-wider">12:00 م</span>
+                    <span class="text-[10px] text-slate-400">PS-OS v26.4</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="relative z-10 max-w-7xl mx-auto px-4 pt-6 pb-20">
+
+        <!-- 1. شريط التنقل بأسلوب البلايستيشن (PS5 XMB Horizontal Navigation) -->
+        <nav aria-label="قائمة النظام" class="mb-8">
+            <div class="flex items-center justify-between mb-2 px-1">
+                <span class="text-xs text-cyan-400 font-bold flex items-center gap-1.5">
+                    <i class="ph-fill ph-sparkle"></i> اختر القسم التفاعلي من شريط نظام البلايستيشن:
+                </span>
+                <span class="text-[11px] text-slate-400 hidden sm:inline">استخدم الأسهم ◀ ▶ أو اضغط على الأيقونة</span>
+            </div>
+
+            <div class="flex items-center gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-3 px-1" id="xmbNav">
+                <!-- تبويب 1 (جديد): مكتبة الألعاب الشاملة 400+ لعبة -->
+                <button onclick="switchTab('library')" data-tab="library" onmouseenter="playHoverSound()" class="xmb-item active shrink-0 flex items-center gap-3 px-4 py-3.5 rounded-2xl ps-glass border border-white/10 cursor-pointer text-right min-w-[215px] sm:min-w-[235px]">
+                    <div class="w-11 h-11 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-2xl shrink-0">
+                        <i class="ph-fill ph-game-controller"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-extrabold text-white">مكتبة الألعاب (400+)</div>
+                        <div class="text-[11px] text-cyan-300 font-bold">صور، أحجام، وطلب خاص</div>
+                    </div>
+                </button>
+
+                <!-- تبويب 2: حاسبة المساحة والألعاب -->
+                <button onclick="switchTab('storage')" data-tab="storage" onmouseenter="playHoverSound()" class="xmb-item shrink-0 flex items-center gap-3 px-4 py-3.5 rounded-2xl ps-glass border border-white/10 cursor-pointer text-right min-w-[205px] sm:min-w-[225px]">
+                    <div class="w-11 h-11 rounded-xl bg-blue-500/20 text-blue-300 flex items-center justify-center text-2xl shrink-0">
+                        <i class="ph-fill ph-hard-drives"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-extrabold text-white">حاسبة الهارد والسلة</div>
+                        <div class="text-[11px] text-slate-300">املأ جهازك واحسب السعر</div>
+                    </div>
+                </button>
+
+                <!-- تبويب 3: أداة تشخيص الأعطال -->
+                <button onclick="switchTab('diagnostic')" data-tab="diagnostic" onmouseenter="playHoverSound()" class="xmb-item shrink-0 flex items-center gap-3 px-4 py-3.5 rounded-2xl ps-glass border border-white/10 cursor-pointer text-right min-w-[205px] sm:min-w-[225px]">
+                    <div class="w-11 h-11 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center text-2xl shrink-0">
+                        <i class="ph-fill ph-cpu"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-extrabold text-white">شخّص عطل جهازك</div>
+                        <div class="text-[11px] text-slate-300">فحص هندسي فوري</div>
+                    </div>
+                </button>
+
+                <!-- تبويب 4: صندوق الجوائز الغامض -->
+                <button onclick="switchTab('lootbox')" data-tab="lootbox" onmouseenter="playHoverSound()" class="xmb-item shrink-0 flex items-center gap-3 px-4 py-3.5 rounded-2xl ps-glass border border-white/10 cursor-pointer text-right min-w-[205px] sm:min-w-[225px]">
+                    <div class="w-11 h-11 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center text-2xl shrink-0">
+                        <i class="ph-fill ph-treasure-chest"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-extrabold text-white">صندوق الحظ والمكافآت</div>
+                        <div class="text-[11px] text-slate-300">افتح هديتك بكود الفاتورة</div>
+                    </div>
+                </button>
+
+                <!-- تبويب 5: سوق المستعمل والمراوس -->
+                <button onclick="switchTab('market')" data-tab="market" onmouseenter="playHoverSound()" class="xmb-item shrink-0 flex items-center gap-3 px-4 py-3.5 rounded-2xl ps-glass border border-white/10 cursor-pointer text-right min-w-[205px] sm:min-w-[225px]">
+                    <div class="w-11 h-11 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-2xl shrink-0">
+                        <i class="ph-fill ph-storefront"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-extrabold text-white">سوق المستعمل والمراوس</div>
+                        <div class="text-[11px] text-slate-300">مفحوص ومكفول بالمركز</div>
+                    </div>
+                </button>
+
+                <!-- تبويب 6: موقعنا والتواصل (النجف - حي السلام) -->
+                <button onclick="switchTab('hub')" data-tab="hub" onmouseenter="playHoverSound()" class="xmb-item shrink-0 flex items-center gap-3 px-4 py-3.5 rounded-2xl ps-glass border border-white/10 cursor-pointer text-right min-w-[205px] sm:min-w-[225px]">
+                    <div class="w-11 h-11 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center text-2xl shrink-0">
+                        <i class="ph-fill ph-map-pin-line"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-extrabold text-white">موقعنا والتواصل</div>
+                        <div class="text-[11px] text-slate-300">النجف - حي السلام</div>
+                    </div>
+                </button>
+            </div>
+        </nav>
+
+        <!-- ===================================================================== -->
+        <!-- القسم الأول (الجديد): مكتبة الألعاب الشاملة (400+ لعبة) -->
+        <!-- ===================================================================== -->
+        <section id="tab-library" class="tab-content space-y-6">
+            <!-- بانر علوي سينمائي مستوحى من God of War Ragnarok -->
+            <div class="relative rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_15px_40px_rgba(0,112,209,0.25)]">
+                <div class="absolute inset-0 bg-gradient-to-l from-slate-950 via-slate-950/85 to-blue-950/60 z-10"></div>
+                <img id="bannerHeroBg" src="images/bg.jpg" onerror="if(window.handleBgFallback){handleBgFallback(this);}else{this.style.display='none';}" alt="God of War Ragnarok" class="w-full h-64 sm:h-72 object-cover object-center opacity-60 animate-cinematic-bg">
+                
+                <!-- زر صغير وأنيق في زاوية المكتبة لرفع/معاينة مجلد الصور المحلي -->
+                <div class="absolute top-3 left-3 z-30">
+                    <input type="file" id="localImagesFolderInput" webkitdirectory directory multiple accept="image/*" class="hidden" onchange="handleLocalFolderUpload(event)">
+                    <button onclick="document.getElementById('localImagesFolderInput').click()" class="px-3 py-1.5 rounded-xl bg-slate-950/85 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 border border-cyan-400/40 backdrop-blur-md text-[11px] font-extrabold flex items-center gap-1.5 shadow-lg transition cursor-pointer" title="اختر مجلد images من جهازك لمعاينة صورك فوراً">
+                        <i class="ph-bold ph-folder-open text-sm"></i>
+                        <span>تخصيص / رفع صورك</span>
+                    </button>
+                </div>
+
+                <div class="relative z-20 p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div class="max-w-2xl space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-extrabold">
+                            <i class="ph-fill ph-fire"></i> سعر أي لعبة 1,000 دينار فقط!
+                        </div>
+                        <h2 class="text-2xl sm:text-4xl font-black text-white leading-tight">
+                            مكتبة الألعاب الشاملة <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">(+400 لعبة)</span>
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            استعرض أحدث إصدارات PS4 و PS5 والـ PC مع التعريب الكامل والتحديثات الأخيرة بسعر موحد (1,000 د.ع للعبة الواحدة). أضف الألعاب مباشرة إلى سلة الهارد أو اطلب أي لعبة غير موجودة وسنوفرها لك فوراً!
+                        </p>
+                    </div>
+
+                    <!-- بطاقة طلب لعبة غير موجودة -->
+                    <div class="ps-glass border border-amber-400/40 rounded-2xl p-4 sm:p-5 max-w-sm w-full shrink-0 shadow-[0_0_25px_rgba(245,158,11,0.15)]">
+                        <div class="flex items-center gap-2.5 mb-2">
+                            <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl">
+                                <i class="ph-fill ph-sparkle"></i>
+                            </div>
+                            <h3 class="text-sm font-black text-white">لم تجد لعبتك ضمن القائمة؟</h3>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">نمتلك أرشيفاً يتجاوز 400 لعبة! اكتب اسم اللعبة ونوع جهازك وسنجهزها لك فوراً.</p>
+                        <button onclick="toggleCustomGameModal(true)" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition cursor-pointer">
+                            <i class="ph-fill ph-whatsapp-logo text-lg"></i>
+                            <span>اطلب أي لعبة عبر واتساب</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- شريط البحث الذكي وفلترة التصنيفات -->
+            <div class="ps-glass rounded-2xl p-4 border border-white/10 space-y-4">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+                    <!-- محرك البحث -->
+                    <div class="relative w-full md:w-96">
+                        <i class="ph ph-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-cyan-400 text-lg"></i>
+                        <input type="text" id="libSearchInput" oninput="renderLibraryGames()" placeholder="ابحث بالاسم أو التصنيف (مثل: God of War, كرة قدم, GTA)..." class="w-full pr-10 pl-4 py-2.5 rounded-xl bg-slate-950/80 border border-white/15 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400">
+                    </div>
+
+                    <!-- مؤشر عدد الألعاب المتوفرة بالمحل -->
+                    <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+                        <span class="text-xs font-bold text-slate-300 bg-slate-900/90 px-3 py-2 rounded-xl border border-white/10">
+                            المعروض: <strong id="libShownCount" class="text-cyan-400">16</strong> من أصل <strong class="text-amber-400">+400 لعبة</strong> بالمحل
+                        </span>
+                        <button onclick="switchTab('storage')" class="px-3.5 py-2 rounded-xl bg-blue-600/80 hover:bg-blue-500 text-white text-xs font-extrabold flex items-center gap-1.5 transition cursor-pointer">
+                            <i class="ph-fill ph-hard-drives"></i>
+                            <span>سلة الهارد (<span id="libCartMiniCount">0</span>)</span>
+                        </button>
+                    </div>
+                </div>
+
+                    <!-- أزرار فلترة التصنيف -->
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                    <button onclick="filterLibCategory('ALL')" class="lib-cat-btn active shrink-0 px-4 py-2 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950 transition">الكل (<span id="catCountAll">0</span>)</button>
+                    <button onclick="filterLibCategory('معرّبة 🇮🇶')" class="lib-cat-btn shrink-0 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-amber-300 hover:text-white border border-amber-500/30 transition">🇮🇶 ألعاب معرّبة</button>
+                    <button onclick="filterLibCategory('أكشن ومغامرات')" class="lib-cat-btn shrink-0 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-300 hover:text-white border border-white/10 transition">⚔️ أكشن ومغامرات</button>
+                    <button onclick="filterLibCategory('كرة قدم ورياضة')" class="lib-cat-btn shrink-0 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-300 hover:text-white border border-white/10 transition">⚽ كرة قدم ورياضة</button>
+                    <button onclick="filterLibCategory('عالم مفتوح و GTA')" class="lib-cat-btn shrink-0 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-300 hover:text-white border border-white/10 transition">🏙️ عالم مفتوح و GTA</button>
+                    <button onclick="filterLibCategory('رعب وبقاء')" class="lib-cat-btn shrink-0 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-300 hover:text-white border border-white/10 transition">🧟 رعب وبقاء</button>
+                    <button onclick="filterLibCategory('سباقات وسيارات')" class="lib-cat-btn shrink-0 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-300 hover:text-white border border-white/10 transition">🏎️ سباقات وسيارات</button>
+                    <button onclick="filterLibCategory('قتال وأنمي')" class="lib-cat-btn shrink-0 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-300 hover:text-white border border-white/10 transition">🥊 قتال وأنمي</button>
+                    <button onclick="filterLibCategory('عائلي ومنصات')" class="lib-cat-btn shrink-0 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-300 hover:text-white border border-white/10 transition">🎮 عائلي ومنصات</button>
+                </div>
+            </div>
+
+            <!-- شبكة بطاقات الألعاب بأغلفة بصرية احترافية -->
+            <div id="libraryGamesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <!-- يتم توليد بطاقات الألعاب عبر JS -->
+            </div>
+
+            <!-- زر طلب لعبة غير موجودة في نهاية القائمة -->
+            <div class="ps-glass rounded-3xl p-6 border border-cyan-500/25 text-center space-y-3">
+                <p class="text-sm font-bold text-slate-200">هل تبحث عن لعبة أخرى غير ظاهرة أعلاه؟ لدينا أكثر من 400 لعبة جاهزة للتحميل!</p>
+                <button onclick="toggleCustomGameModal(true)" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-black text-sm shadow-lg transition cursor-pointer">
+                    <i class="ph-fill ph-whatsapp-logo text-xl"></i>
+                    <span>اطلب أي لعبة غير موجودة عبر واتساب</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- القسم الثاني: حاسبة المساحة وباقة الألعاب (Storage & Bundle Builder) -->
+        <!-- ===================================================================== -->
+        <section id="tab-storage" class="tab-content hidden space-y-6">
+            <!-- لوحة التحكم بالمساحة (نفس شريط PS4/PS5 Storage) -->
+            <div class="ps-glass rounded-3xl p-5 sm:p-6 border border-cyan-500/25">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-5">
+                    <div>
+                        <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">نظام إدارة التخزين الذكي</span>
+                        <h2 class="text-xl sm:text-2xl font-black text-white mt-0.5">حاسبة مساحة الهارد وسلة الطلبات</h2>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1">اختر حجم هارد جهازك، أضف ألعابك، ثم اكتب اسمك ونوع جهازك وأرسل القائمة مباشرة إلى واتساب المركز.</p>
+                    </div>
+
+                    <!-- أزرار اختيار حجم الهارد -->
+                    <div class="flex flex-wrap items-center gap-2 bg-slate-950/70 p-1.5 rounded-2xl border border-white/10">
+                        <button onclick="setStorageCapacity(400, '500GB')" id="cap-400" class="cap-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.5)] transition">
+                            500GB <span class="text-[10px] opacity-80 block sm:inline">(صافي 400GB)</span>
+                        </button>
+                        <button onclick="setStorageCapacity(860, '1TB')" id="cap-860" class="cap-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold text-slate-300 hover:text-white transition">
+                            1TB <span class="text-[10px] opacity-80 block sm:inline">(صافي 860GB)</span>
+                        </button>
+                        <button onclick="setStorageCapacity(1750, '2TB')" id="cap-1750" class="cap-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold text-slate-300 hover:text-white transition">
+                            2TB <span class="text-[10px] opacity-80 block sm:inline">(صافي 1750GB)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- شريط المساحة البصري -->
+                <div class="bg-slate-950/80 rounded-2xl p-4 border border-white/10 space-y-4">
+                    <div>
+                        <div class="flex flex-wrap justify-between items-end gap-2 mb-2">
+                            <div class="flex items-center gap-2">
+                                <i class="ph-fill ph-disc text-cyan-400 text-xl animate-spin" style="animation-duration: 8s;"></i>
+                                <span class="text-sm font-bold text-slate-200">المساحة المستخدمة: <strong id="usedSpaceText" class="text-cyan-400 text-base">0 GB</strong> من <span id="totalSpaceText">400 GB</span></span>
+                            </div>
+                            <div class="text-xs sm:text-sm font-bold text-emerald-400">
+                                المتبقي: <span id="freeSpaceText">400 GB</span>
+                            </div>
+                        </div>
+
+                        <!-- شريط التقدم -->
+                        <div class="w-full h-5 bg-slate-800/90 rounded-full overflow-hidden p-0.5 border border-white/10">
+                            <div id="storageProgressBar" class="storage-bar-fill h-full rounded-full" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- بيانات الزبون لإرسال الطلب -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-white/10">
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-400 block mb-1">اسم الزبون الكريم (اختياري)</label>
+                            <input type="text" id="customerNameInput" placeholder="اكتب اسمك هنا..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-400 block mb-1">نوع جهازك</label>
+                            <select id="customerConsoleSelect" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                                <option value="PS4 مهكر (Jailbreak)">PS4 مهكر (Jailbreak)</option>
+                                <option value="PS4 عادي (حسابات / رسمي)">PS4 عادي (حسابات / رسمي)</option>
+                                <option value="PS5">PS5</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- ملخص السلة السريع -->
+                    <div class="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex flex-wrap items-center gap-4 sm:gap-6 w-full sm:w-auto justify-between sm:justify-start">
+                        <div>
+                            <span class="text-xs text-slate-400 block">عدد الألعاب المختارة</span>
+                            <span id="selectedCountText" class="text-lg font-black text-white">0 لعبة</span>
+                        </div>
+                        <div class="h-8 w-px bg-white/10"></div>
+                        <div>
+                            <span class="text-xs text-slate-400 block">التكلفة الإجمالية (1,000 د.ع / لعبة)</span>
+                            <span id="totalPriceText" class="text-lg sm:text-xl font-black text-amber-400">0 د.ع</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <button onclick="clearSelectedGames()" class="px-3.5 py-3 rounded-xl bg-slate-800 hover:bg-rose-950/80 text-slate-300 hover:text-rose-300 border border-white/10 text-xs font-bold transition cursor-pointer">
+                                <i class="ph-bold ph-trash"></i> تفريغ
+                            </button>
+                            <button onclick="sendGamesToWhatsApp()" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs sm:text-sm font-black shadow-[0_0_20px_rgba(16,185,129,0.4)] transition cursor-pointer">
+                                <i class="ph-fill ph-whatsapp-logo text-xl"></i>
+                                <span>إرسال القائمة إلى واتساب المركز (07840022295)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- قائمة الألعاب المختارة حالياً للمراجعة السريعة -->
+                    <div id="selectedGamesPreviewBox" class="hidden pt-3 border-t border-white/10">
+                        <span class="text-xs font-bold text-cyan-300 block mb-2">الألعاب المضافة في قائمتك حالياً (اضغط للإزالة):</span>
+                        <div id="selectedGamesChips" class="flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- شريط البحث وفلترة المنصات -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="relative w-full sm:w-80">
+                    <i class="ph ph-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                    <input type="text" id="gameSearchInput" oninput="renderGames()" placeholder="ابحث عن لعبة (مثلاً: FIFA, GTA, God of War)..." class="w-full pr-10 pl-4 py-2.5 rounded-xl ps-glass border border-white/15 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400">
+                </div>
+
+                <div class="flex items-center gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar">
+                    <button onclick="filterPlatform('ALL')" class="plat-btn active px-4 py-2 rounded-xl text-xs font-bold bg-cyan-500 text-slate-950 transition">الكل</button>
+                    <button onclick="filterPlatform('PS4')" class="plat-btn px-4 py-2 rounded-xl text-xs font-bold ps-glass text-slate-300 hover:text-white transition">PS4</button>
+                    <button onclick="filterPlatform('PS5')" class="plat-btn px-4 py-2 rounded-xl text-xs font-bold ps-glass text-slate-300 hover:text-white transition">PS5</button>
+                    <button onclick="filterPlatform('PC')" class="plat-btn px-4 py-2 rounded-xl text-xs font-bold ps-glass text-slate-300 hover:text-white transition">PC</button>
+                </div>
+            </div>
+
+            <!-- شبكة الألعاب -->
+            <div id="gamesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <!-- يتم توليد البطاقات عبر JavaScript -->
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- القسم الثالث: أداة شخّص عطل جهازك بنفسك (Diagnostic Wizard) -->
+        <!-- ===================================================================== -->
+        <section id="tab-diagnostic" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto ps-glass rounded-3xl p-6 sm:p-8 border border-purple-500/30">
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+                    <div>
+                        <span class="text-xs font-bold text-purple-400">المساعد الهندسي الذكي</span>
+                        <h2 class="text-xl sm:text-2xl font-black text-white mt-0.5">شخّص عطل جهازك بنفسك خلال ثوانٍ</h2>
+                    </div>
+                    <button onclick="resetDiagnostic()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 flex items-center gap-1">
+                        <i class="ph-bold ph-arrow-counter-clockwise"></i> إعادة الفحص
+                    </button>
+                </div>
+
+                <!-- مؤشر الخطوات -->
+                <div class="grid grid-cols-3 gap-2 mb-8">
+                    <div id="diag-step-ind-1" class="h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_#00E5FF]"></div>
+                    <div id="diag-step-ind-2" class="h-2 rounded-full bg-slate-800 transition-all"></div>
+                    <div id="diag-step-ind-3" class="h-2 rounded-full bg-slate-800 transition-all"></div>
+                </div>
+
+                <!-- الخطوة 1: نوع الجهاز -->
+                <div id="diag-step-1" class="space-y-4">
+                    <h3 class="text-lg font-bold text-cyan-300">الخطوة 1: ما هو نوع الجهاز الذي به مشكلة؟</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="selectDiagDevice('PS5')" class="ps-card-hover p-4 rounded-2xl bg-slate-900/80 border border-white/10 text-right flex items-center gap-4 cursor-pointer">
+                            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl"><i class="ph-fill ph-playstation-logo"></i></div>
+                            <div>
+                                <div class="font-extrabold text-white">بلايستيشن 5 (PS5)</div>
+                                <div class="text-xs text-slate-400">نسخة الأقراص أو الديجيتال أو سلم</div>
+                            </div>
+                        </button>
+                        <button onclick="selectDiagDevice('PS4')" class="ps-card-hover p-4 rounded-2xl bg-slate-900/80 border border-white/10 text-right flex items-center gap-4 cursor-pointer">
+                            <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl"><i class="ph-fill ph-game-controller"></i></div>
+                            <div>
+                                <div class="font-extrabold text-white">بلايستيشن 4 (Pro / Slim / Fat)</div>
+                                <div class="text-xs text-slate-400">جميع الموديلات والأنظمة</div>
+                            </div>
+                        </button>
+                        <button onclick="selectDiagDevice('PC')" class="ps-card-hover p-4 rounded-2xl bg-slate-900/80 border border-white/10 text-right flex items-center gap-4 cursor-pointer">
+                            <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl"><i class="ph-fill ph-desktop-tower"></i></div>
+                            <div>
+                                <div class="font-extrabold text-white">حاسبة جيمنج أو لابتوب (PC)</div>
+                                <div class="text-xs text-slate-400">تجميعات، كروت شاشة، أو ويندوز</div>
+                            </div>
+                        </button>
+                        <button onclick="selectDiagDevice('Controller')" class="ps-card-hover p-4 rounded-2xl bg-slate-900/80 border border-white/10 text-right flex items-center gap-4 cursor-pointer">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl"><i class="ph-fill ph-joystick"></i></div>
+                            <div>
+                                <div class="font-extrabold text-white">قبضة تحكم (DualSense / DualShock)</div>
+                                <div class="text-xs text-slate-400">انحراف جير، شحن، أو أزرار</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- الخطوة 2: الأعراض -->
+                <div id="diag-step-2" class="hidden space-y-4">
+                    <h3 class="text-lg font-bold text-cyan-300">الخطوة 2: ما هي المشكلة الرئيسية التي تلاحظها؟</h3>
+                    <div id="diag-symptoms-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- يتم تعبئتها ديناميكياً حسب الجهاز -->
+                    </div>
+                </div>
+
+                <!-- الخطوة 3: تفاصيل إضافية / لون الإضاءة -->
+                <div id="diag-step-3" class="hidden space-y-4">
+                    <h3 class="text-lg font-bold text-cyan-300">الخطوة 3: حدد الحالة الأدق أو لون الإضاءة بالجهاز:</h3>
+                    <div id="diag-details-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- يتم تعبئتها ديناميكياً -->
+                    </div>
+                </div>
+
+                <!-- النتيجة النهائية: بطاقة التشخيص الهندسي -->
+                <div id="diag-result" class="hidden">
+                    <div class="bg-gradient-to-br from-slate-900 via-blue-950/50 to-slate-900 border-2 border-cyan-400/60 rounded-3xl p-6 shadow-[0_0_35px_rgba(0,229,255,0.2)]">
+                        <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-white/10 mb-5">
+                            <div class="flex items-center gap-2">
+                                <span class="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-extrabold border border-cyan-400/30">تقرير الفحص الأولي</span>
+                                <span id="res-device-badge" class="text-xs text-slate-300 font-bold"></span>
+                            </div>
+                            <div class="text-xs font-extrabold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30">
+                                دقة التشخيص: <span id="res-confidence">90%</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <span class="text-xs text-slate-400 block">العطل المرجح هندسياً:</span>
+                                <h4 id="res-fault-title" class="text-xl sm:text-2xl font-black text-white mt-1"></h4>
+                            </div>
+
+                            <p id="res-fault-desc" class="text-sm text-slate-300 leading-relaxed bg-slate-950/60 p-4 rounded-2xl border border-white/5"></p>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                                <div class="bg-slate-950/70 p-4 rounded-2xl border border-white/10">
+                                    <span class="text-xs text-slate-400 flex items-center gap-1"><i class="ph-fill ph-clock text-cyan-400"></i> مدة الإصلاح المتوقعة</span>
+                                    <span id="res-time" class="text-base font-extrabold text-white mt-1 block"></span>
+                                </div>
+                                <div class="bg-slate-950/70 p-4 rounded-2xl border border-white/10">
+                                    <span class="text-xs text-slate-400 flex items-center gap-1"><i class="ph-fill ph-coins text-amber-400"></i> التكلفة التقديرية بالمركز</span>
+                                    <span id="res-cost" class="text-base font-extrabold text-amber-400 mt-1 block"></span>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 flex flex-col sm:flex-row gap-3">
+                                <button onclick="bookRepairWhatsApp()" class="flex-1 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-slate-950 font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,229,255,0.4)] transition cursor-pointer">
+                                    <i class="ph-fill ph-calendar-check text-xl"></i>
+                                    <span>احجز موعد صيانة الآن عبر واتساب</span>
+                                </button>
+                                <button onclick="resetDiagnostic()" class="py-3.5 px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition">
+                                    فحص جهاز آخر
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- القسم الثالث: صندوق الجوائز الغامض (Mystery Loot Box) -->
+        <!-- ===================================================================== -->
+        <section id="tab-lootbox" class="tab-content hidden">
+            <div class="max-w-3xl mx-auto space-y-6">
+                <div class="ps-glass rounded-3xl p-6 sm:p-8 border border-amber-500/30 text-center relative overflow-hidden">
+                    <!-- إضاءة خلفية ذهبية/سماوية -->
+                    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-72 h-72 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs font-bold mb-3">
+                        <i class="ph-fill ph-sparkle"></i> نظام مكافآت زبائن مركز النجوم
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-black text-white">صندوق الحظ الغامض (Loot Box)</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-2 max-w-md mx-auto">
+                        أدخل كود الفاتورة وافتح الصندوق لتربح جوائز وخصومات فورية بناءً على نسبة حظك المحددة!
+                    </p>
+
+                    <!-- مجمج الصندوق التفاعلي -->
+                    <div class="my-8 flex justify-center">
+                        <div id="mysteryChest" class="chest-idle relative w-40 h-40 rounded-3xl bg-gradient-to-b from-amber-500/20 via-blue-600/20 to-slate-900 border-2 border-amber-400/60 flex items-center justify-center shadow-[0_0_50px_rgba(245,158,11,0.35)]">
+                            <i id="chestIcon" class="ph-fill ph-treasure-chest text-7xl text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)]"></i>
+                            <div class="absolute -bottom-3 px-3 py-0.5 rounded-full bg-slate-950 border border-amber-400/50 text-[10px] font-extrabold text-amber-300">
+                                MYSTERY BOX
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- حقل إدخال الكود -->
+                    <div id="lootboxInputArea" class="max-w-md mx-auto space-y-3">
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="text" id="lootCodeInput" placeholder="أدخل كود الخصم أو الهدية..." class="flex-1 px-4 py-3.5 rounded-2xl bg-slate-950/90 border border-white/15 text-center font-extrabold text-amber-300 tracking-widest uppercase focus:outline-none focus:border-amber-400">
+                            <button onclick="openMysteryBox()" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-sm shadow-[0_0_20px_rgba(245,158,11,0.4)] transition cursor-pointer">
+                                افتح الصندوق 🎁
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
+                            <span>جرب كود تلقائي: <button onclick="fillDemoCode('NOJOOM1')" class="text-cyan-300 font-bold underline cursor-pointer">NOJOOM1</button> (من 1 إلى 100)</span>
+                            <span class="text-amber-400 font-bold">100 كود نشط للزبائن 🔑</span>
+                        </div>
+                    </div>
+
+                    <!-- نتيجة الجائزة -->
+                    <div id="lootPrizeResult" class="hidden max-w-md mx-auto mt-6 bg-slate-950/90 border-2 border-emerald-400/60 rounded-2xl p-5 shadow-[0_0_30px_rgba(16,185,129,0.25)]">
+                        <div id="prizeHeaderBadge" class="text-xs font-extrabold text-emerald-400 uppercase mb-1">🎉 نتيجة الصندوق:</div>
+                        <h3 id="prizeTitle" class="text-xl font-black text-white mb-2"></h3>
+                        <p id="prizeDesc" class="text-xs text-slate-300 mb-4"></p>
+                        <div id="prizeClaimBox" class="bg-slate-900 p-3 rounded-xl border border-dashed border-amber-400/60 mb-4">
+                            <span class="text-[10px] text-slate-400 block">كود استلام الجائزة (أرسله عبر واتساب):</span>
+                            <span id="prizeClaimCode" class="text-lg font-mono font-black text-amber-400 tracking-widest"></span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                            <button id="prizeClaimWaBtn" onclick="claimPrizeWhatsApp()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 cursor-pointer">
+                                <i class="ph-fill ph-whatsapp-logo text-base"></i>
+                                <span>تثبيت الجائزة عبر واتساب</span>
+                            </button>
+                            <button onclick="resetLootBox()" class="text-xs text-cyan-400 hover:underline font-bold">تجربة كود آخر</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- القسم الخامس: سوق المستعمل والمقايضة بضمان المركز (Marketplace) -->
+        <!-- ===================================================================== -->
+        <section id="tab-market" class="tab-content hidden space-y-6">
+            <div class="ps-glass rounded-3xl p-5 sm:p-6 border border-emerald-500/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-bold text-emerald-400">بيع • شراء • مراوس آمن</span>
+                    <h2 class="text-xl sm:text-2xl font-black text-white mt-0.5">سوق الأجهزة المستعملة بضمان مركز النجوم</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-1">جميع الأجهزة والأقراص المعروضة هنا مفحوصة هندسياً داخل مركزنا ومكفولة من أي عيب مخفي.</p>
+                </div>
+                <button onclick="toggleSellModal(true)" class="shrink-0 px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold text-xs sm:text-sm flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.35)] transition cursor-pointer">
+                    <i class="ph-bold ph-plus-circle text-lg"></i>
+                    <span>اعرض جهازك للبيع أو المراوس</span>
+                </button>
+            </div>
+
+            <!-- شبكة الأجهزة المستعملة -->
+            <div id="marketGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- يتم توليد البطاقات عبر JS -->
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- القسم السادس: موقعنا والتواصل (النجف الأشرف - حي السلام) -->
+        <!-- ===================================================================== -->
+        <section id="tab-hub" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="ps-glass rounded-3xl p-6 border border-blue-500/20">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl mb-4">
+                        <i class="ph-fill ph-wrench"></i>
+                    </div>
+                    <h3 class="text-lg font-black text-white mb-2">صيانة الهاردوير المتقدمة</h3>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                        تبديل قواعد HDMI بأجهزة لحام حراري احترافية، معالجة مشاكل الباور والـ BLOD، وإعادة بناء المعالجات (Reballing)، بالإضافة إلى تنظيف شامل وتبديل معجون حراري أصلي (Arctic MX-4 / Liquid Metal).
+                    </p>
+                </div>
+
+                <div class="ps-glass rounded-3xl p-6 border border-cyan-500/20">
+                    <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl mb-4">
+                        <i class="ph-fill ph-terminal-window"></i>
+                    </div>
+                    <h3 class="text-lg font-black text-white mb-2">تعديل الأنظمة وتحميل 400+ لعبة</h3>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                        تفعيل أحدث أنظمة التعديل (Jailbreak / GoldHEN) لأجهزة PS4 و PS5 بأعلى استقرار، مع مكتبة ضخمة تضم أكثر من 400 لعبة حديثة وكلاسيكية مترجمة ومحدثة بالكامل وبسرعة نقل فائقة.
+                    </p>
+                </div>
+
+                <div class="ps-glass rounded-3xl p-6 border border-emerald-500/20">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-4">
+                        <i class="ph-fill ph-map-pin-line"></i>
+                    </div>
+                    <h3 class="text-lg font-black text-white mb-2">موقعنا وأوقات الدوام</h3>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                        <strong class="text-white">العراق - النجف الأشرف - حي السلام</strong><br>
+                        هاتف وواتساب: <span dir="ltr" class="text-cyan-300 font-bold">07840022295</span><br>
+                        نستقبلكم يومياً من الساعة 10:00 صباحاً وحتى 11:00 ليلاً. الفحص الأولي مجاني عند الصيانة.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="https://wa.me/9647840022295?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20%D9%85%D8%B1%D9%83%D8%B2%20%D8%A7%D9%84%D9%86%D8%AC%D9%88%D9%85%D8%8C%20%D9%85%D9%85%D9%83%D9%86%20%D9%85%D9%88%D9%82%D8%B9%20%D8%A7%D9%84%D9%85%D8%AD%D9%84%20GPS%20%D9%81%D9%8A%20%D8%AD%D9%8A%20%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%D8%9F" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-extrabold text-white transition">
+                            <i class="ph-fill ph-whatsapp-logo text-base"></i>
+                            <span>اطلب موقع GPS واتساب</span>
+                        </a>
+                        <a href="tel:+9647840022295" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-extrabold text-white transition">
+                            <i class="ph-fill ph-phone-call text-base"></i>
+                            <span>اتصال مباشر</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- خريطة توضيحية تفاعلية لموقع المركز في النجف - حي السلام -->
+            <div class="ps-glass rounded-3xl p-5 border border-cyan-500/25">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-navigation-arrow text-cyan-400 text-xl"></i>
+                        <h3 class="text-base sm:text-lg font-black text-white">الخريطة التفاعلية: مركز النجوم للإلكترونيات - النجف الأشرف / حي السلام</h3>
+                    </div>
+                    <a href="https://maps.google.com/?q=32.0285,44.3462" target="_blank" class="text-xs font-bold text-cyan-400 hover:underline flex items-center gap-1">
+                        <span>فتح في خرائط جوجل (Google Maps)</span>
+                        <i class="ph-bold ph-arrow-up-left"></i>
+                    </a>
+                </div>
+                <div class="w-full h-64 sm:h-80 rounded-2xl overflow-hidden border border-white/10 relative">
+                    <iframe 
+                        title="موقع مركز النجوم للإلكترونيات في النجف حي السلام"
+                        src="https://www.openstreetmap.org/export/embed.html?bbox=44.3250%2C32.0150%2C44.3650%2C32.0420&amp;layer=mapnik&amp;marker=32.0285%2C44.3462" 
+                        class="w-full h-full border-0 filter invert hue-rotate-180 contrast-90 opacity-85"
+                        loading="lazy">
+                    </iframe>
+                    <div class="absolute bottom-3 right-3 ps-glass px-4 py-2 rounded-xl border border-cyan-400/50 text-xs font-bold text-white flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+                        <span>مركز النجوم للإلكترونيات - حي السلام، النجف الأشرف</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- شريط السلة العائم السفلي (يظهر تلقائياً عند اختيار ألعاب لإرسالها بسرعة عبر واتساب) -->
+    <div id="floatingCartBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[95%] max-w-4xl hidden">
+        <div class="ps-glass border-2 border-cyan-400/70 rounded-2xl p-3 sm:px-5 sm:py-3.5 shadow-[0_10px_40px_rgba(0,0,0,0.85),0_0_25px_rgba(0,229,255,0.3)] flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-xl shrink-0">
+                    <i class="ph-fill ph-shopping-bag-open"></i>
+                </div>
+                <div>
+                    <div class="text-xs sm:text-sm font-black text-white">
+                        تم اختيار <span id="floatCartCount" class="text-cyan-400">0</span> لعبة 
+                        <span class="text-slate-400 mx-1">•</span> 
+                        <span id="floatCartSize" class="text-emerald-400">0 GB</span>
+                        <span class="text-slate-400 mx-1">•</span>
+                        <span id="floatCartPrice" class="text-amber-400">0 د.ع</span>
+                    </div>
+                    <div class="text-[11px] text-slate-300">جاهز للإرسال إلى واتساب مركز النجوم (07840022295)</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button onclick="switchTab('storage')" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-extrabold border border-white/10 transition cursor-pointer">
+                    مراجعة الهارد
+                </button>
+                <button onclick="sendGamesToWhatsApp()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs sm:text-sm font-black flex items-center justify-center gap-1.5 shadow-lg transition cursor-pointer">
+                    <i class="ph-fill ph-whatsapp-logo text-lg"></i>
+                    <span>إرسال عبر واتساب الآن</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة (Modal) طلب لعبة غير موجودة في القائمة -->
+    <div id="customGameModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+        <div class="ps-glass border border-amber-400/50 rounded-3xl max-w-md w-full p-6 relative shadow-[0_0_40px_rgba(245,158,11,0.2)]">
+            <button onclick="toggleCustomGameModal(false)" class="absolute top-4 left-4 w-8 h-8 rounded-full bg-slate-800 hover:bg-rose-600 text-white flex items-center justify-center transition">
+                <i class="ph-bold ph-x"></i>
+            </button>
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mb-3">
+                <i class="ph-fill ph-game-controller"></i>
+            </div>
+            <h3 class="text-xl font-black text-white mb-1">اطلب أي لعبة غير موجودة بالقائمة</h3>
+            <p class="text-xs text-slate-300 mb-4">نمتلك أكثر من 400 لعبة! اكتب اسم اللعبة وسنجهزها لك على الفور.</p>
+
+            <form onsubmit="submitCustomGameRequest(event)" class="space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-slate-300 block mb-1">اسم اللعبة المطلوبة (أو عدة ألعاب)</label>
+                    <input type="text" id="customGameName" required placeholder="مثلاً: Sekiro, Bloodborne, Resident Evil 4..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-sm text-white focus:border-amber-400 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-slate-300 block mb-1">نوع الجهاز</label>
+                        <select id="customGamePlatform" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-sm text-white focus:border-amber-400 focus:outline-none">
+                            <option value="PS4 (نظام معدل)">PS4 (نظام معدل)</option>
+                            <option value="PS4 (حساب / رسمي)">PS4 (رسمي)</option>
+                            <option value="PS5">PS5</option>
+                            <option value="PC / لابتوب">PC / لابتوب</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-300 block mb-1">تفضلها مترجمة؟</label>
+                        <select id="customGameLang" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-sm text-white focus:border-amber-400 focus:outline-none">
+                            <option value="نعم (تعريب إن توفر)">نعم (تعريب إن توفر)</option>
+                            <option value="النسخة الإنجليزية الأصلية">النسخة الإنجليزية الأصلية</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-sm shadow-lg flex items-center justify-center gap-2 transition cursor-pointer">
+                    <i class="ph-fill ph-whatsapp-logo text-lg"></i>
+                    <span>إرسال الطلب لواتساب 07840022295</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة (Modal) إضافة جهاز مستعمل للبيع أو المراوس -->
+    <div id="sellModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+        <div class="ps-glass border border-cyan-400/40 rounded-3xl max-w-md w-full p-6 relative">
+            <button onclick="toggleSellModal(false)" class="absolute top-4 left-4 w-8 h-8 rounded-full bg-slate-800 hover:bg-rose-600 text-white flex items-center justify-center transition">
+                <i class="ph-bold ph-x"></i>
+            </button>
+            <h3 class="text-xl font-black text-white mb-1">اعرض جهازك للبيع أو المراوس</h3>
+            <p class="text-xs text-slate-400 mb-4">سيتم نشر إعلانك في سوق المركز بعد فحص الجهاز مجاناً في محلنا بالنجف.</p>
+
+            <form onsubmit="submitUsedItem(event)" class="space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-slate-300 block mb-1">اسم الجهاز أو الغرض</label>
+                    <input type="text" id="sellTitle" required placeholder="مثلاً: PS4 Slim 1TB مع قبضتين" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-slate-300 block mb-1">نوع العملية</label>
+                        <select id="sellType" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                            <option value="للبيع">للبيع المباشر</option>
+                            <option value="للمراوس">للمراوس (استبدال)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-300 block mb-1">السعر المطلوب (د.ع)</label>
+                        <input type="text" id="sellPrice" required placeholder="مثلاً: 280,000" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-300 block mb-1">حالة الجهاز وملاحظاتك</label>
+                    <textarea id="sellNotes" rows="2" required placeholder="مفتوح صيانة أم لا؟ الملحقات المتوفرة..." class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-white/15 text-sm text-white focus:border-cyan-400 focus:outline-none"></textarea>
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-black text-sm shadow-lg hover:opacity-95 transition cursor-pointer">
+                    إرسال الطلب للفحص والنشر عبر واتساب
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- البرمجة التفاعلية والمؤثرات الصوتية (Web Audio API & App Logic) -->
+    <!-- ===================================================================== -->
+    <script>
+        // رقم الواتساب الخاص بمركز النجوم للإلكترونيات - النجف حي السلام
+        const SHOP_WHATSAPP = "9647840022295";
+
+        // نظام المؤثرات الصوتية بأسلوب البلايستيشن (Web Audio API)
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playTone(freq, type, duration, gainVal = 0.05) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                // Ignore audio context errors before user interaction
+            }
+        }
+
+        function playHoverSound() { playTone(440, 'sine', 0.04, 0.02); }
+        function playClickSound() { playTone(587.33, 'triangle', 0.08, 0.04); }
+        function playWinSound() {
+            if (!soundEnabled) return;
+            playTone(523.25, 'sine', 0.15, 0.06);
+            setTimeout(() => playTone(659.25, 'sine', 0.15, 0.06), 150);
+            setTimeout(() => playTone(783.99, 'sine', 0.3, 0.08), 300);
+        }
+        function playErrorSound() {
+            if (!soundEnabled) return;
+            playTone(220, 'sawtooth', 0.15, 0.05);
+            setTimeout(() => playTone(164.81, 'sawtooth', 0.2, 0.05), 150);
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            if (soundEnabled) {
+                icon.className = "ph-fill ph-speaker-high text-lg";
+                showToast("الصوت مفعل", "تم تشغيل مؤثرات نظام البلايستيشن", "ph-speaker-high");
+            } else {
+                icon.className = "ph-fill ph-speaker-slash text-lg";
+                showToast("كتم الصوت", "تم كتم المؤثرات الصوتية", "ph-speaker-slash");
+            }
+        }
+
+        function showToast(title, msg, iconClass = "ph-fill ph-info") {
+            const toast = document.getElementById('psToast');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMsg').textContent = msg;
+            document.getElementById('toastIcon').className = iconClass + " text-xl";
+            
+            toast.classList.remove('opacity-0', '-translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', '-translate-y-4');
+            }, 3000);
+        }
+
+        // دالة تبديل التبويبات الرئيسية (XMB Switcher)
+        function switchTab(tabId) {
+            playClickSound();
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.xmb-item').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`[data-tab="${tabId}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ساعة النظام الحية
+        setInterval(() => {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'م' : 'ص';
+            hours = hours % 12 || 12;
+            const clockEl = document.getElementById('liveClock');
+            if (clockEl) clockEl.textContent = `${hours}:${minutes} ${ampm}`;
+        }, 1000);
+
+        // جزيئات الخلفية
+        const particlesContainer = document.getElementById('particlesContainer');
+        if (particlesContainer) {
+            for (let i = 0; i < 22; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = Math.random() * 5 + 2;
+                p.style.width = `${size}px`;
+                p.style.height = `${size}px`;
+                p.style.left = `${Math.random() * 100}%`;
+                p.style.animationDuration = `${Math.random() * 12 + 8}s`;
+                p.style.animationDelay = `${Math.random() * 5}s`;
+                particlesContainer.appendChild(p);
+            }
+        }
+
+        // إنشاء 100 كود دائمي وثابت للزبائن (NOJOOM1 إلى NOJOOM100) تتوزع آلياً
+        let activePromoCodes = [];
+        const prizeTypesPool = [
+            { type: 'tryagain', title: "حظ أوفر في المرة القادمة! 😅", desc: "لم يحالفك الحظ هذه المرة.. ننتظرك بزيارات قادمة!", prefix: "TRY", weight: 35 },
+            { type: 'game1', title: "مبروك ربحت تحميل لعبة واحدة 🎮", desc: "اختر أي لعبة من مكتبة مركز النجوم وحمّلها مجاناً.", prefix: "GAME1", weight: 20 },
+            { type: 'disc50', title: "مبروك ربحت خصم 50% على تنزيل الألعاب! 🏷️🔥", desc: "استفد من خصم نص السعر على مجموعتك القادمة.", prefix: "DISC50", weight: 15 },
+            { type: 'disc25', title: "مبروك ربحت خصم 25% على الصيانة! 🛠️", desc: "خصم ربع السعر لأي عطل صيانة في مركزنا.", prefix: "DISC25", weight: 15 },
+            { type: 'disc10', title: "مبروك ربحت خصم 10% على أي شيء بالمحل! ✨", desc: "خصم شامل لكل منتجات وإكسسوارات المركز.", prefix: "DISC10", weight: 10 },
+            { type: 'game3', title: "مبروك ربحت 3 لعبات مجانية 🎮🔥", desc: "اختر أي 3 ألعاب من مكتبة مركز النجوم.", prefix: "GAME3", weight: 5 }
+        ];
+
+        // مولد تلقائي لـ 100 كود (NOJOOM1 إلى NOJOOM100) وتوزيع الجوائز عليها بنسب مضبوطة
+        function init100PromoCodes() {
+            for (let i = 1; i <= 100; i++) {
+                let codeName = `NOJOOM${i}`;
+                let rand = Math.random() * 100;
+                let assignedPrize = prizeTypesPool[0];
+                
+                let cumulative = 0;
+                for (let p of prizeTypesPool) {
+                    cumulative += p.weight;
+                    if (rand <= cumulative) {
+                        assignedPrize = p;
+                        break;
+                    }
+                }
+                activePromoCodes.push({
+                    code: codeName,
+                    ...assignedPrize
+                });
+            }
+        }
+        init100PromoCodes();
+
+        let currentWonPrize = null;
+
+        function fillDemoCode(code) {
+            playClickSound();
+            document.getElementById('lootCodeInput').value = code;
+        }
+
+        function openMysteryBox() {
+            const codeVal = document.getElementById('lootCodeInput').value.trim().toUpperCase();
+            if (!codeVal) {
+                playErrorSound();
+                showToast("أدخل الكود أولاً", "اكتب الكود (من NOJOOM1 إلى NOJOOM100) لفتح الصندوق", "ph-warning");
+                return;
+            }
+
+            const foundCode = activePromoCodes.find(p => p.code === codeVal);
+            if (!foundCode) {
+                playErrorSound();
+                showToast("كود غير صحيح", "هذا الكود غير متوفر ضمن الـ 100 كود المعتمد بالمحل!", "ph-x-circle");
+                return;
+            }
+
+            playClickSound();
+            const chest = document.getElementById('mysteryChest');
+            chest.classList.remove('chest-idle');
+            chest.classList.add('chest-opening');
+
+            setTimeout(() => {
+                chest.classList.remove('chest-opening');
+                chest.classList.add('chest-idle');
+
+                const resultCard = document.getElementById('lootPrizeResult');
+                const headerBadge = document.getElementById('prizeHeaderBadge');
+                const claimBox = document.getElementById('prizeClaimBox');
+                const claimWaBtn = document.getElementById('prizeClaimWaBtn');
+
+                document.getElementById('lootboxInputArea').classList.add('hidden');
+                resultCard.classList.remove('hidden');
+                document.getElementById('prizeTitle').textContent = foundCode.title;
+                document.getElementById('prizeDesc').textContent = foundCode.desc + " (يتم استخدامه في زيارتك أو طلبك القادم بالمحل)";
+
+                if (foundCode.type === 'tryagain') {
+                    playErrorSound();
+                    currentWonPrize = null;
+                    resultCard.className = "max-w-md mx-auto mt-6 bg-slate-950/90 border-2 border-slate-600/70 rounded-2xl p-5 shadow-lg";
+                    headerBadge.className = "text-xs font-extrabold text-slate-400 uppercase mb-1";
+                    headerBadge.textContent = `نتيجة الكود (${codeVal}):`;
+                    claimBox.classList.add('hidden');
+                    claimWaBtn.classList.add('hidden');
+                } else {
+                    playWinSound();
+                    const claimCode = `${foundCode.prefix}-${codeVal}`;
+                    currentWonPrize = { ...foundCode, claimCode, usedCode: codeVal };
+                    resultCard.className = "max-w-md mx-auto mt-6 bg-slate-950/90 border-2 border-emerald-400/60 rounded-2xl p-5 shadow-[0_0_30px_rgba(16,185,129,0.25)]";
+                    headerBadge.className = "text-xs font-extrabold text-emerald-400 uppercase mb-1";
+                    headerBadge.textContent = `🎉 مبروك! كود فعال للزيارة القادمة (${codeVal}):`;
+                    claimBox.classList.remove('hidden');
+                    claimWaBtn.classList.remove('hidden');
+                    document.getElementById('prizeClaimCode').textContent = claimCode;
+                }
+            }, 800);
+        }
+
+        function resetLootBox() {
+            playClickSound();
+            document.getElementById('lootCodeInput').value = '';
+            document.getElementById('lootboxInputArea').classList.remove('hidden');
+            document.getElementById('lootPrizeResult').classList.add('hidden');
+        }
+
+        function claimPrizeWhatsApp() {
+            if (!currentWonPrize) return;
+            playClickSound();
+            const text = `السلام عليكم مركز النجوم للإلكترونيات 🎁\nأرغب بتثبيت جائزتي للاستخدام في المرة القادمة:\n\n🔑 الكود: ${currentWonPrize.usedCode}\n🏆 الجائزة: ${currentWonPrize.title}\n🔖 كود التحقق للاستخدام القادم: ${currentWonPrize.claimCode}`;
+            window.open(`https://wa.me/${SHOP_WHATSAPP}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        // سوق المستعمل والمراوس بضمان المركز (Marketplace)
+        // =====================================================================
+        const usedItemsList = [
+            { title: "PS4 Slim 1TB مهكر (نظام 9.00) + قبضتين", type: "للبيع", price: "295,000 د.ع", badge: "مفحوص ومكفول ✓", notes: "نظافة 98%، غير مفتوح صيانة، محمّل بأحدث الألعاب المعربة.", hex1: "#0284c7", hex2: "#0f172a" },
+            { title: "PS5 النسخة القياسية (أقراص) 825GB", type: "للبيع / مراوس", price: "540,000 د.ع", badge: "ضمان المركز 30 يوم", notes: "مع كارتونته الأصلية وقبضة DualSense أصلية بحالة الوكالة.", hex1: "#1d4ed8", hex2: "#090d16" },
+            { title: "قبضة PS4 أصلية وكالة (مفحوصة)", type: "للبيع", price: "35,000 د.ع", badge: "بطارية ممتازة", notes: "جير أصلي بدون أي انحراف، مفحوصة على جهاز التستر في المحل.", hex1: "#059669", hex2: "#064e3b" }
+        ];
+
+        function renderMarket() {
+            const grid = document.getElementById('marketGrid');
+            if (!grid) return;
+            grid.innerHTML = usedItemsList.map(item => `
+                <div class="ps-card-hover ps-glass rounded-3xl overflow-hidden border border-white/10 flex flex-col justify-between">
+                    <div>
+                        <div class="h-40 relative overflow-hidden">
+                            <img src="${generateArtPosterSVG(item.title, item.type, item.hex1, item.hex2, item.badge)}" alt="${item.title}" class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 px-3 py-1 rounded-full bg-emerald-500 text-slate-950 text-[11px] font-black">${item.badge}</span>
+                        </div>
+                        <div class="p-5">
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="text-xs font-bold text-cyan-400">${item.type}</span>
+                                <span class="text-base font-black text-amber-400">${item.price}</span>
+                            </div>
+                            <h3 class="text-base font-black text-white mb-2">${item.title}</h3>
+                            <p class="text-xs text-slate-300 leading-relaxed">${item.notes}</p>
+                        </div>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <a href="https://wa.me/${SHOP_WHATSAPP}?text=${encodeURIComponent(`السلام عليكم مركز النجوم، أستفسر عن العرض في سوق المستعمل:\n📦 ${item.title}\n💰 السعر: ${item.price}`)}" target="_blank" onclick="playClickSound()" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center justify-center gap-2 transition">
+                            <i class="ph-fill ph-whatsapp-logo text-base"></i>
+                            <span>استفسر أو احجز الفحص بالمحل</span>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleSellModal(show) {
+            playClickSound();
+            const modal = document.getElementById('sellModal');
+            if (!modal) return;
+            if (show) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function submitUsedItem(e) {
+            e.preventDefault();
+            playClickSound();
+            const title = document.getElementById('sellTitle').value;
+            const type = document.getElementById('sellType').value;
+            const price = document.getElementById('sellPrice').value;
+            const notes = document.getElementById('sellNotes').value;
+
+            const text = `السلام عليكم مركز النجوم للإلكترونيات 🏪\nأرغب بعرض جهازي في سوق المستعمل بالموقع:\n\n📦 الجهاز: ${title}\n🔄 العملية: ${type}\n💰 السعر المطلوب: ${price} د.ع\n📝 الملاحظات: ${notes}`;
+            toggleSellModal(false);
+            window.open(`https://wa.me/${SHOP_WHATSAPP}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        // دعم التنقل بلوحة المفاتيح (الأسهم يمين ويسار) مثل البلايستيشن
+        const tabOrder = ['library', 'storage', 'diagnostic', 'lootbox', 'market', 'hub'];
+        document.addEventListener('keydown', (e) => {
+            if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+            const activeBtn = document.querySelector('.xmb-item.active');
+            if (!activeBtn) return;
+            let idx = tabOrder.indexOf(activeBtn.dataset.tab);
+            if (e.key === 'ArrowLeft') {
+                idx = (idx + 1) % tabOrder.length;
+                switchTab(tabOrder[idx]);
+            } else if (e.key === 'ArrowRight') {
+                idx = (idx - 1 + tabOrder.length) % tabOrder.length;
+                switchTab(tabOrder[idx]);
+            }
+        });
+
+        // 5. مكتبة الألعاب الشاملة (+400 لعبة) وقائمة الألعاب في الحاسبة
+        let customLocalImages = {};
+
+        function handleLocalFolderUpload(event) {
+            const files = event.target.files;
+            for (let file of files) {
+                const cleanName = file.name.toLowerCase().trim();
+                customLocalImages[cleanName] = URL.createObjectURL(file);
+            }
+            showToast("تم تحميل الصور ✓", `تم تحميل ${files.length} صورة من جهازك بنجاح`, "ph-check-circle");
+            renderLibraryGames();
+            renderGames();
+        }
+
+        function handleBgFallback(imgEl) {
+            imgEl.src = "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop";
+        }
+
+        function generateArtPosterSVG(title, cat, hex1 = '#0070D1', hex2 = '#040710', subtitle = '1,000 د.ع') {
+            const cleanTitle = title.replace(/\.[^/.]+$/, "").replace(/\[.*?\]/g, "").trim();
+            const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">
+                <defs>
+                    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="${hex1}"/>
+                        <stop offset="100%" stop-color="${hex2}"/>
+                    </linearGradient>
+                    <linearGradient id="overlay" x1="0%" y1="100%" x2="0%" y2="0%">
+                        <stop offset="0%" stop-color="#050811" stop-opacity="0.95"/>
+                        <stop offset="60%" stop-color="#050811" stop-opacity="0.4"/>
+                        <stop offset="100%" stop-color="#050811" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+                <rect width="400" height="500" fill="url(#bg)"/>
+                <circle cx="200" cy="180" r="120" fill="#00E5FF" opacity="0.15" filter="blur(30px)"/>
+                <path d="M0 300 Q200 250 400 300 L400 500 L0 500 Z" fill="url(#overlay)"/>
+                <text x="35" y="60" fill="#00E5FF" font-family="Cairo, sans-serif" font-size="14" font-weight="bold">${cat}</text>
+                <text x="35" y="380" fill="#ffffff" font-family="Cairo, sans-serif" font-size="24" font-weight="900" width="330">${cleanTitle.length > 30 ? cleanTitle.substring(0,28)+'...' : cleanTitle}</text>
+                <rect x="35" y="415" width="110" height="32" rx="8" fill="#0070D1" opacity="0.85"/>
+                <text x="90" y="435" fill="#ffffff" font-family="Cairo, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">${subtitle}</text>
+            </svg>`;
+            return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svgStr)))}`;
+        }
+
+        const rawGamesList = [
+            { name: "A WAY OUT", size: 35, cat: "أكشن ومغامرات", plat: "PS4", file: "a way 0ut=up0006-cusa07995_00.jpg" },
+            { name: "Aaru's Awakening", size: 12, cat: "عائلي ومنصات", plat: "PS4", file: "aaru's awakening (eu  us).jpg" },
+            { name: "Air Conflicts Double Pack", size: 18, cat: "سباقات وسيارات", plat: "PS4", file: "air conflicts double pack.jpg" },
+            { name: "Air Conflicts", size: 15, cat: "سباقات وسيارات", plat: "PS4", file: "air conflicts.jpg" },
+            { name: "Alien Isolation", size: 22, cat: "رعب وبقاء", plat: "PS4", file: "alien.isolation.eur.ps4.jpg" },
+            { name: "Among the Sleep", size: 8, cat: "رعب وبقاء", plat: "PS4", file: "among the sleep.jpg" },
+            { name: "Assassin's Creed Mirage", size: 42, cat: "أكشن ومغامرات", plat: "PS4", file: "assassin's creed mirage[cusa33151].jpg" },
+            { name: "Assassin's Creed Origins (عربي)", size: 48, cat: "معرّبة 🇮🇶", plat: "PS4", file: "assassin's creed origins arabic with 1.41.jpg" },
+            { name: "Assassin's Creed Rogue Remastered", size: 14, cat: "أكشن ومغامرات", plat: "PS4", file: "assassin's creed rogue  remastered.jpg" },
+            { name: "Assassin's Creed Syndicate", size: 38, cat: "أكشن ومغامرات", plat: "PS4", file: "assassin's creed syndicate[cusa02378].jpg" },
+            { name: "Assassin's Creed Unity (عربي)", size: 45, cat: "معرّبة 🇮🇶", plat: "PS4", file: "assassin's creed unity arabic ps4.jpg" },
+            { name: "Assassin's Creed Valhalla Ultimate", size: 95, cat: "عالم مفتوح و GTA", plat: "PS4", file: "assassins creed valhalla ultimate edition v7.20[cusa18522][optional fix].jpg" },
+            { name: "Assassin's Creed IV Black Flag", size: 24, cat: "أكشن ومغامرات", plat: "PS4", file: "assassins.creed.iv.black.flag.ps4-duplex.jpg" },
+            { name: "Assetto Corsa Competizione", size: 20, cat: "سباقات وسيارات", plat: "PS4", file: "assetto corsa competizion[cusa17266].jpg" },
+            { name: "Assetto Corsa", size: 16, cat: "سباقات وسيارات", plat: "PS4", file: "assetto corsa.jpg" },
+            { name: "Attack on Titan Wings of Freedom", size: 26, cat: "قتال وأنمي", plat: "PS4", file: "attack on titan wings of freedom.jpg" },
+            { name: "Batman Arkham City", size: 30, cat: "أكشن ومغامرات", plat: "PS4", file: "batman arkham citye[cusa02000].jpg" },
+            { name: "Batman Arkham Knight", size: 48, cat: "أكشن ومغامرات", plat: "PS4", file: "batman arkham knight (cusa00135).jpg" },
+            { name: "Batman Return to Arkham Asylum", size: 35, cat: "أكشن ومغامرات", plat: "PS4", file: "batman return to arkham arkham asylum.jpg" },
+            { name: "Battlefield 1 Revolution", size: 44, cat: "أكشن ومغامرات", plat: "PS4", file: "battlefield 1 revolution[cusa02387].jpg" },
+            { name: "Battlefield 4", size: 36, cat: "أكشن ومغامرات", plat: "PS4", file: "battlefield 4 by nabeel.jpg" },
+            { name: "Battlefield Hardline", size: 40, cat: "أكشن ومغامرات", plat: "PS4", file: "battlefield hardline[cusa00625].jpg" },
+            { name: "Battlefield V", size: 50, cat: "أكشن ومغامرات", plat: "PS4", file: "battlefield v.jpg" },
+            { name: "Beyond Two Souls", size: 32, cat: "أكشن ومغامرات", plat: "PS4", file: "beyond two souls.jpg" },
+            { name: "Bioshock Infinite", size: 20, cat: "أكشن ومغامرات", plat: "PS4", file: "bioshock.infinite ps4.jpg" },
+            { name: "Black Ops 6", size: 75, cat: "أكشن ومغامرات", plat: "PS5", file: "blak ops 6.jpg" },
+            { name: "Call of Duty Black Ops Cold War", size: 85, cat: "أكشن ومغامرات", plat: "PS4", file: "call of duty  black ops cold war[cusa15010][zombies base installl.dlc].jpg" },
+            { name: "Call of Duty Modern Warfare", size: 90, cat: "أكشن ومغامرات", plat: "PS4", file: "call of duty  modern warfare[cusa08829][campaign.pack dlc pack 2].jpg" },
+            { name: "Call of Duty Advanced Warfare", size: 45, cat: "أكشن ومغامرات", plat: "PS4", file: "call of duty advanced warfare.jpg" },
+            { name: "Call of Duty Black Ops III", size: 55, cat: "أكشن ومغامرات", plat: "PS4", file: "call of duty black ops iii.jpg" },
+            { name: "Call of Duty Modern Warfare Remastered", size: 40, cat: "أكشن ومغامرات", plat: "PS4", file: "call of duty modern warfare remastered.jpg" },
+            { name: "Crash Bandicoot N. Sane Trilogy", size: 22, cat: "عائلي ومنصات", plat: "PS4", file: "crash bandicoot n. sane trilogy[dlc 1].jpg" },
+            { name: "Crash Team Racing Nitro Fueled", size: 18, cat: "سباقات وسيارات", plat: "PS4", file: "crash team racing nitro fueled[cusa14876].jpg" },
+            { name: "Dark Souls III The Fire Fades", size: 25, cat: "أكشن ومغامرات", plat: "PS4", file: "dark souls iii the fire fades edition ps4.jpg" },
+            { name: "Days Gone", size: 42, cat: "رعب وبقاء", plat: "PS4", file: "days gone[cusa15027].jpg" },
+            { name: "Dead Island Definitive Edition", size: 14, cat: "رعب وبقاء", plat: "PS4", file: "dead island - definitive edition.jpg" },
+            { name: "Deadpool", size: 16, cat: "أكشن ومغامرات", plat: "PS4", file: "deadpool.ps4-duplex.jpg" },
+            { name: "Death Stranding", size: 50, cat: "أكشن ومغامرات", plat: "PS4", file: "death stranding[cusa12605]fix 5.05].jpg" },
+            { name: "Detroit Become Human", size: 40, cat: "أكشن ومغامرات", plat: "PS4", file: "detroit become human[cusa09417][update v1.08].jpg" },
+            { name: "Devil May Cry 5", size: 35, cat: "أكشن ومغامرات", plat: "PS4", file: "devil.may.cry.5.ps4-duplex 6.72.jpg" },
+            { name: "DiRT Rally 2.0", size: 38, cat: "سباقات وسيارات", plat: "PS4", file: "dirt rally 2.0 6.72.jpg" },
+            { name: "Dragon Ball FighterZ", size: 15, cat: "قتال وأنمي", plat: "PS4", file: "dragon ball z fighter =ep0700-cusa08992_00.jpg" },
+            { name: "Dragon Ball Xenoverse 2", size: 16, cat: "قتال وأنمي", plat: "PS4", file: "dragonball xenoverse 2.jpg" },
+            { name: "Dying Light", size: 28, cat: "رعب وبقاء", plat: "PS4", file: "dying light ps4.jpg" },
+            { name: "eFootball 2026 (Bitbox)", size: 32, cat: "كرة قدم ورياضة", plat: "PS4", file: "efootball 2026 bitbox game[cusa18648].jpg" },
+            { name: "eFootball PES 2021 (Smoke Patch)", size: 28, cat: "كرة قدم ورياضة", plat: "PS4", file: "efootball pes 2021[cusa18740][smoke patch v3 21.3.6[fix 5.05-6.72-7.02].jpg" },
+            { name: "Elden Ring", size: 45, cat: "أكشن ومغامرات", plat: "PS4", file: "elden ring[cusa28863].jpg" },
+            { name: "Fallout 4", size: 32, cat: "عالم مفتوح و GTA", plat: "PS4", file: "fallout 4.jpg" },
+            { name: "Far Cry 5", size: 38, cat: "عالم مفتوح و GTA", plat: "PS4", file: "far cry 5[cusa05904].jpg" },
+            { name: "Far Cry 6", size: 55, cat: "عالم مفتوح و GTA", plat: "PS4", file: "farcry6.jpg" },
+            { name: "FIFA 17 (عربي)", size: 35, cat: "معرّبة 🇮🇶", plat: "PS4", file: "fifa 17 arabic.jpg" },
+            { name: "FIFA 18 (عربي)", size: 36, cat: "معرّبة 🇮🇶", plat: "PS4", file: "fifa 18 arabic.jpg" },
+            { name: "FIFA 26", size: 48, cat: "كرة قدم ورياضة", plat: "PS5", file: "fifa 26[cusa52342].jpg" },
+            { name: "FIFA 20", size: 38, cat: "كرة قدم ورياضة", plat: "PS4", file: "fifa.20[cusa15545].jpg" },
+            { name: "Ghost of Tsushima Director's Cut", size: 60, cat: "أكشن ومغامرات", plat: "PS4", file: "ghost of tsushima directors cut[cusa11456].jpg" },
+            { name: "God of War Ragnarok", size: 84, cat: "أكشن ومغامرات", plat: "PS4", file: "god of war ragnarok[cusa34390].jpg" },
+            { name: "God of War 3 Remastered", size: 38, cat: "أكشن ومغامرات", plat: "PS4", file: "god of war3.jpg" },
+            { name: "God of War (2018)", size: 42, cat: "أكشن ومغامرات", plat: "PS4", file: "god of war[cusa07410].jpg" },
+            { name: "Gran Turismo Sport", size: 45, cat: "سباقات وسيارات", plat: "PS4", file: "gran turismo sport[cusa02168].jpg" },
+            { name: "GTA V (Grand Theft Auto V)", size: 55, cat: "عالم مفتوح و GTA", plat: "PS4", file: "gta by nabeel.jpg" },
+            { name: "GTA San Andreas", size: 10, cat: "عالم مفتوح و GTA", plat: "PS4", file: "gta san.jpg" },
+            { name: "Hitman Steelbook Edition", size: 35, cat: "أكشن ومغامرات", plat: "PS4", file: "hitman steelbook edition=ep0082-cusa06508_00.jpg" },
+            { name: "Horizon Zero Dawn", size: 40, cat: "أكشن ومغامرات", plat: "PS4", file: "horizon zero dawn=ep9000-cusa07319_00.jpg" },
+            { name: "Injustice 2 Legendary Edition", size: 45, cat: "قتال وأنمي", plat: "PS4", file: "injustice 2 legendary edition[cusa10688].jpg" },
+            { name: "It Takes Two", size: 42, cat: "عائلي ومنصات", plat: "PS4", file: "it takes two[cusa16746].jpg" },
+            { name: "Jump Force", size: 18, cat: "قتال وأنمي", plat: "PS4", file: "jump force [cusa11638].jpg" },
+            { name: "Just Cause 3 (عربي)", size: 38, cat: "معرّبة 🇮🇶", plat: "PS4", file: "just cause 3 arabic edition.jpg" },
+            { name: "Just Cause 4 Gold Edition", size: 45, cat: "عالم مفتوح و GTA", plat: "PS4", file: "just cause 4 gold edition[cusa09254].jpg" },
+            { name: "Kena Bridge of Spirits", size: 20, cat: "عائلي ومنصات", plat: "PS4", file: "kena bridge of spirits[cusa24853].jpg" },
+            { name: "Little Nightmares", size: 8, cat: "رعب وبقاء", plat: "PS4", file: "little nightmares (cusa05952).jpg" },
+            { name: "Mad Max", size: 32, cat: "عالم مفتوح و GTA", plat: "PS4", file: "mad max.jpg" },
+            { name: "Mafia Definitive Edition (عربي)", size: 38, cat: "معرّبة 🇮🇶", plat: "PS4", file: "mafia definitive edition[cusa18100][arbic fix 5.05-6.72-7.02].jpg" },
+            { name: "Mafia II Definitive Edition", size: 22, cat: "عالم مفتوح و GTA", plat: "PS4", file: "mafia ii definitive edition[cusa16990].jpg" },
+            { name: "Metro Exodus", size: 45, cat: "رعب وبقاء", plat: "PS4", file: "metro exodus[usa11407][update v1.08][fix 6.72].jpg" },
+            { name: "Minecraft PlayStation 4 Edition", size: 1, cat: "عائلي ومنصات", plat: "PS4", file: "minecraft playstation 4 edition.jpg" },
+            { name: "Mortal Kombat 11", size: 65, cat: "قتال وأنمي", plat: "PS4", file: "mortal kombat 11[update.v1.11][cusa11379].jpg" },
+            { name: "Mortal Kombat Xl", size: 40, cat: "قتال وأنمي", plat: "PS4", file: "mortal kombat xl.jpg" },
+            { name: "MotoGP 21", size: 22, cat: "سباقات وسيارات", plat: "PS4", file: "motogp 21[cusa25612].jpg" },
+            { name: "Naruto Shippuden Storm 4 (عربي)", size: 35, cat: "معرّبة 🇮🇶", plat: "PS4", file: "naruto shippuden ultimate ninja storm 4 road to boruto arabic.jpg" },
+            { name: "Need For Speed Heat", size: 30, cat: "سباقات وسيارات", plat: "PS4", file: "need for speed heat.jpg" },
+            { name: "Need for Speed Hot Pursuit Remastered", size: 25, cat: "سباقات وسيارات", plat: "PS4", file: "need for speed hot pursuit remastered[cusa23265].jpg" },
+            { name: "Need for Speed Payback", size: 32, cat: "سباقات وسيارات", plat: "PS4", file: "need for speed payback.jpg" },
+            { name: "Nier Automata", size: 45, cat: "أكشن ومغامرات", plat: "PS4", file: "nier.automata.ps4-duplex.jpg" },
+            { name: "One Piece Pirate Warriors 4", size: 25, cat: "قتال وأنمي", plat: "PS4", file: "one piece pirate warriors 4[cusa17226].jpg" },
+            { name: "Outlast 2", size: 22, cat: "رعب وبقاء", plat: "PS4", file: "outlast 2.jpg" },
+            { name: "Overcooked 2", size: 5, cat: "عائلي ومنصات", plat: "PS4", file: "overcooked 2[cusa10940].jpg" },
+            { name: "Persona 5", size: 20, cat: "أكشن ومغامرات", plat: "PS4", file: "persona.5.ps4-duplex.jpg" },
+            { name: "Red Dead Redemption 2 (عربي)", size: 105, cat: "معرّبة 🇮🇶", plat: "PS4", file: "red dead redemption 2 [duplex][cusa08519][update.v1.29][arabic].jpg" },
+            { name: "Resident Evil 2 Remake", size: 24, cat: "رعب وبقاء", plat: "PS4", file: "resident evil 2 6.72.jpg" },
+            { name: "Resident Evil 4", size: 20, cat: "رعب وبقاء", plat: "PS4", file: "resident evil 4 ps4.jpg" },
+            { name: "Resident Evil 7 Biohazard (عربي)", size: 25, cat: "معرّبة 🇮🇶", plat: "PS4", file: "resident evil 7 biohazard arabic.jpg" },
+            { name: "Resident Evil Village", size: 30, cat: "رعب وبقاء", plat: "PS4", file: "resident evil village[cusa18008].jpg" },
+            { name: "Rise of the Tomb Raider (عربي)", size: 32, cat: "معرّبة 🇮🇶", plat: "PS4", file: "rise of the tomb raider arabic.jpg" },
+            { name: "Sekiro Shadows Die Twice", size: 16, cat: "أكشن ومغامرات", plat: "PS4", file: "sekiro shadows die twice[cusa13801] 6.72.jpg" },
+            { name: "Shadow of the Tomb Raider (عربي)", size: 35, cat: "معرّبة 🇮🇶", plat: "PS4", file: "shadow of the tomb raider arabic[cusa12089].jpg" },
+            { name: "Sonic Frontiers", size: 24, cat: "عائلي ومنصات", plat: "PS4", file: "sonic frontiers[cusa28194].jpg" },
+            { name: "Spider-Man (عربي)", size: 48, cat: "معرّبة 🇮🇶", plat: "PS4", file: "spider-man arabic.jpg" },
+            { name: "Spider-Man Miles Morales (عربي)", size: 40, cat: "معرّبة 🇮🇶", plat: "PS4", file: "spider-man miles moralaess[cusa20177][arabic].jpg" },
+            { name: "Stray", size: 8, cat: "أكشن ومغامرات", plat: "PS4", file: "stray[cusa24899].jpg" },
+            { name: "Tekken 7", size: 45, cat: "قتال وأنمي", plat: "PS4", file: "tekeen 7.jpg" },
+            { name: "The Last of Us Part II", size: 85, cat: "أكشن ومغامرات", plat: "PS4", file: "the last of us part 2 [cusa10249].jpg" },
+            { name: "The Last of Us Remastered", size: 45, cat: "أكشن ومغامرات", plat: "PS4", file: "the last of us remastered [cusa00556].jpg" },
+            { name: "The Witcher 3 Wild Hunt GOTY", size: 55, cat: "أكشن ومغامرات", plat: "PS4", file: "the witcher 3 wild hunt - game of the year edition.jpg" },
+            { name: "Tomb Raider Definitive Edition", size: 15, cat: "أكشن ومغامرات", plat: "PS4", file: "tomb raider definitive edition.jpg" },
+            { name: "Uncharted 4 A Thief's End (عربي)", size: 60, cat: "معرّبة 🇮🇶", plat: "PS4", file: "uncharted 4 a thiefs end[cusa00918][arabic].jpg" },
+            { name: "Uncharted The Nathan Drake Collection", size: 45, cat: "أكشن ومغامرات", plat: "PS4", file: "uncharted the nathan drake collection.jpg" },
+            { name: "Until Dawn", size: 40, cat: "رعب وبقاء", plat: "PS4", file: "until.dawn.ps4-blaze.jpg" },
+            { name: "Watch Dogs 2 (عربي)", size: 38, cat: "معرّبة 🇮🇶", plat: "PS4", file: "watch dogs 2 arabic ps4.jpg" },
+            { name: "Watch Dogs Legion", size: 45, cat: "عالم مفتوح و GTA", plat: "PS4", file: "watch dogs legion[cusa13115].jpg" },
+            { name: "Yakuza 6 The Song of Life", size: 38, cat: "أكشن ومغامرات", plat: "PS4", file: "yakuza 6 the song of life ps4.jpg" },
+            { name: "Zombie Army Trilogy", size: 16, cat: "رعب وبقاء", plat: "PS4", file: "zombie army trilogy.jpg" }
+        ];
+
+        let selectedGameIds = new Set();
+        let currentLibCat = 'ALL';
+        let currentPlatFilter = 'ALL';
+        let totalCapacity = 400;
+        let capacityName = '500GB';
+
+        function getGameImageSrc(fileKey) {
+            const cleanKey = fileKey.toLowerCase().trim();
+            if (customLocalImages[cleanKey]) {
+                return customLocalImages[cleanKey];
+            }
+            return `images/${fileKey}`;
+        }
+
+        // دالة عرض مكتبة الألعاب الشاملة
+        function renderLibraryGames() {
+            const grid = document.getElementById('libraryGamesGrid');
+            const searchInput = document.getElementById('libSearchInput');
+            const shownCountEl = document.getElementById('libShownCount');
+            const catCountAll = document.getElementById('catCountAll');
+            if (!grid) return;
+
+            const query = searchInput ? searchInput.value.toLowerCase() : '';
+            if (catCountAll) catCountAll.textContent = rawGamesList.length;
+
+            const filtered = rawGamesList.filter(g => {
+                const matchesCat = currentLibCat === 'ALL' || g.cat === currentLibCat;
+                const matchesQuery = g.name.toLowerCase().includes(query) || g.cat.toLowerCase().includes(query) || g.plat.toLowerCase().includes(query);
+                return matchesCat && matchesQuery;
+            });
+
+            if (shownCountEl) shownCountEl.textContent = filtered.length;
+
+            grid.innerHTML = filtered.map((g, idx) => {
+                const isSelected = selectedGameIds.has(g.name);
+                const imgSrc = getGameImageSrc(g.file);
+                const fallbackSvg = generateArtPosterSVG(g.name, g.cat);
+
+                return `
+                    <div class="ps-card-hover ps-glass rounded-3xl overflow-hidden border border-white/10 flex flex-col justify-between group">
+                        <div>
+                            <div class="h-48 relative overflow-hidden bg-slate-950">
+                                <img src="${imgSrc}" onerror="this.onerror=null; this.src='${fallbackSvg}';" alt="${g.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                                <span class="absolute top-3 right-3 px-3 py-1 rounded-full bg-cyan-500/90 text-slate-950 text-[11px] font-black shadow">${g.plat}</span>
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/80 text-amber-300 border border-amber-400/30 text-[11px] font-extrabold">1,000 د.ع</span>
+                                <span class="absolute bottom-3 right-3 px-2.5 py-1 rounded-full bg-slate-900/90 text-cyan-300 text-[10px] font-bold">${g.size} GB</span>
+                            </div>
+                            <div class="p-4">
+                                <span class="text-[11px] text-cyan-400 font-bold block mb-1">${g.cat}</span>
+                                <h3 class="text-base font-black text-white line-clamp-1 mb-2">${g.name}</h3>
+                            </div>
+                        </div>
+                        <div class="px-4 pb-4">
+                            <button onclick="toggleGameSelection('${g.name.replace(/'/g, "\\'")}', ${g.size})" class="w-full py-2.5 px-3 rounded-xl ${isSelected ? 'bg-emerald-600 text-white' : 'bg-cyan-500/20 hover:bg-cyan-500 text-cyan-300 hover:text-slate-950 border border-cyan-400/30'} text-xs font-black flex items-center justify-center gap-2 transition cursor-pointer">
+                                <i class="ph-fill ${isSelected ? 'ph-check-circle' : 'ph-plus-circle'} text-base"></i>
+                                <span>${isSelected ? 'تمت الإضافة للسلة ✓' : 'إضافة إلى الهارد'}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterLibCategory(cat) {
+            playClickSound();
+            currentLibCat = cat;
+            document.querySelectorAll('.lib-cat-btn').forEach(btn => {
+                btn.className = "lib-cat-btn shrink-0 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-300 hover:text-white border border-white/10 transition";
+                if (btn.textContent.includes(cat) || (cat === 'ALL' && btn.textContent.includes('الكل'))) {
+                    btn.className = "lib-cat-btn active shrink-0 px-4 py-2 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950 transition";
+                }
+            });
+            renderLibraryGames();
+        }
+
+        // دالة عرض الألعاب في حاسبة الهارد والسلة
+        function renderGames() {
+            const grid = document.getElementById('gamesGrid');
+            const searchInput = document.getElementById('gameSearchInput');
+            if (!grid) return;
+
+            const query = searchInput ? searchInput.value.toLowerCase() : '';
+            const filtered = rawGamesList.filter(g => {
+                const matchesPlat = currentPlatFilter === 'ALL' || g.plat === currentPlatFilter;
+                const matchesQuery = g.name.toLowerCase().includes(query) || g.cat.toLowerCase().includes(query);
+                return matchesPlat && matchesQuery;
+            });
+
+            grid.innerHTML = filtered.map(g => {
+                const isSelected = selectedGameIds.has(g.name);
+                const imgSrc = getGameImageSrc(g.file);
+                const fallbackSvg = generateArtPosterSVG(g.name, g.cat);
+
+                return `
+                    <div class="ps-glass rounded-2xl overflow-hidden border ${isSelected ? 'border-emerald-400/70 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'border-white/10'} p-3 flex flex-col justify-between">
+                        <div>
+                            <div class="h-32 rounded-xl overflow-hidden relative mb-2.5 bg-slate-950">
+                                <img src="${imgSrc}" onerror="this.onerror=null; this.src='${fallbackSvg}';" alt="${g.name}" class="w-full h-full object-cover">
+                                <span class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-slate-950/80 text-cyan-300 text-[10px] font-bold">${g.plat}</span>
+                                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-slate-900/90 text-amber-300 text-[10px] font-extrabold">1,000 د.ع</span>
+                            </div>
+                            <h3 class="text-sm font-black text-white line-clamp-1">${g.name}</h3>
+                            <span class="text-[11px] text-slate-400 block mb-3">${g.size} GB • ${g.cat}</span>
+                        </div>
+                        <button onclick="toggleGameSelection('${g.name.replace(/'/g, "\\'")}', ${g.size})" class="w-full py-2 rounded-xl ${isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300'} text-xs font-black flex items-center justify-center gap-1.5 transition cursor-pointer">
+                            <i class="ph-fill ${isSelected ? 'ph-check-circle' : 'ph-plus-circle'}"></i>
+                            <span>${isSelected ? 'مضاف بالسلة ✓' : 'أضف للهارد'}</span>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterPlatform(plat) {
+            playClickSound();
+            currentPlatFilter = plat;
+            document.querySelectorAll('.plat-btn').forEach(btn => {
+                btn.className = "plat-btn px-4 py-2 rounded-xl text-xs font-bold ps-glass text-slate-300 hover:text-white transition";
+                if (btn.textContent.trim() === plat || (plat === 'ALL' && btn.textContent.trim() === 'الكل')) {
+                    btn.className = "plat-btn active px-4 py-2 rounded-xl text-xs font-bold bg-cyan-500 text-slate-950 transition";
+                }
+            });
+            renderGames();
+        }
+
+        function toggleGameSelection(gameName, size) {
+            playClickSound();
+            if (selectedGameIds.has(gameName)) {
+                selectedGameIds.delete(gameName);
+                showToast("إزالة لعبة", `تمت إزالة ${gameName} من سلة الهارد`, "ph-minus-circle");
+            } else {
+                const currentUsed = Array.from(selectedGameIds).reduce((sum, name) => {
+                    const item = rawGamesList.find(x => x.name === name);
+                    return sum + (item ? item.size : 0);
+                }, 0);
+
+                if (currentUsed + size > totalCapacity) {
+                    playErrorSound();
+                    showToast("عذراً، المساحة لا تكفي!", `حجم الهارد المتبقي لا يتحمل هذه اللعبة (${size}GB). اختر هارد أكبر أو احذف لعبة أخرى.`, "ph-warning");
+                    return;
+                }
+                selectedGameIds.add(gameName);
+                showToast("إضافة لعبة ✓", `تمت إضافة ${gameName} إلى الهارد (${size}GB)`, "ph-check-circle");
+            }
+            updateStorageUI();
+            renderLibraryGames();
+            renderGames();
+        }
+
+        function setStorageCapacity(cap, name) {
+            playClickSound();
+            totalCapacity = cap;
+            capacityName = name;
+            document.querySelectorAll('.cap-btn').forEach(btn => {
+                btn.className = "cap-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold text-slate-300 hover:text-white transition";
+            });
+            document.getElementById(`cap-${cap}`).className = "cap-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.5)] transition";
+            
+            // التحقق من تجاوز المساحة الجديدة
+            const currentUsed = Array.from(selectedGameIds).reduce((sum, name) => {
+                const item = rawGamesList.find(x => x.name === name);
+                return sum + (item ? item.size : 0);
+            }, 0);
+
+            if (currentUsed > totalCapacity) {
+                selectedGameIds.clear();
+                showToast("تنبيه إعادة ضبط", "تم تفريغ الألعاب المختارة لتجاوزها المساحة الجديدة للهارد", "ph-info");
+            }
+            updateStorageUI();
+        }
+
+        function clearSelectedGames() {
+            playClickSound();
+            selectedGameIds.clear();
+            updateStorageUI();
+            renderLibraryGames();
+            renderGames();
+            showToast("تفريغ السلة", "تم تفريغ قائمة الألعاب بالكامل", "ph-trash");
+        }
+
+        function updateStorageUI() {
+            const usedSpace = Array.from(selectedGameIds).reduce((sum, name) => {
+                const item = rawGamesList.find(x => x.name === name);
+                return sum + (item ? item.size : 0);
+            }, 0);
+
+            const freeSpace = totalCapacity - usedSpace;
+            const percent = Math.min(100, Math.round((usedSpace / totalCapacity) * 100));
+            const totalPrice = selectedGameIds.size * 1000;
+
+            document.getElementById('usedSpaceText').textContent = `${usedSpace} GB`;
+            document.getElementById('totalSpaceText').textContent = `${totalCapacity} GB`;
+            document.getElementById('freeSpaceText').textContent = `${freeSpace} GB`;
+            document.getElementById('storageProgressBar').style.width = `${percent}%`;
+
+            document.getElementById('selectedCountText').textContent = `${selectedGameIds.size} لعبة`;
+            document.getElementById('totalPriceText').textContent = `${totalPrice.toLocaleString()} د.ع`;
+            document.getElementById('headerCartBadge').textContent = selectedGameIds.size;
+            document.getElementById('libCartMiniCount').textContent = selectedGameIds.size;
+
+            // الشريط العائم السفلي
+            const floatingBar = document.getElementById('floatingCartBar');
+            if (selectedGameIds.size > 0) {
+                floatingBar.classList.remove('hidden');
+                document.getElementById('floatCartCount').textContent = selectedGameIds.size;
+                document.getElementById('floatCartSize').textContent = `${usedSpace} GB`;
+                document.getElementById('floatCartPrice').textContent = `${totalPrice.toLocaleString()} د.ع`;
+            } else {
+                floatingBar.classList.add('hidden');
+            }
+
+            // رقاقات الألعاب المختارة
+            const chipsBox = document.getElementById('selectedGamesChips');
+            const previewBox = document.getElementById('selectedGamesPreviewBox');
+            if (selectedGameIds.size > 0) {
+                previewBox.classList.remove('hidden');
+                chipsBox.innerHTML = Array.from(selectedGameIds).map(name => `
+                    <span onclick="toggleGameSelection('${name.replace(/'/g, "\\'")}', 0)" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 text-xs font-bold flex items-center gap-1.5 cursor-pointer hover:bg-rose-950 hover:text-rose-300 transition">
+                        <span>${name}</span>
+                        <i class="ph-bold ph-x text-xs"></i>
+                    </span>
+                `).join('');
+            } else {
+                previewBox.classList.add('hidden');
+            }
+        }
+
+        function sendGamesToWhatsApp() {
+            if (selectedGameIds.size === 0) {
+                playErrorSound();
+                showToast("السلة فارغة", "اختر بعض الألعاب أولاً لإرسالها عبر واتساب", "ph-warning");
+                return;
+            }
+            playClickSound();
+            const gamesArr = Array.from(selectedGameIds);
+            const totalPrice = gamesArr.length * 1000;
+
+            // اختيار كود عشوائي للزبون تلقائياً للاستخدام في المرة القادمة
+            const randomAssignedCode = activePromoCodes[Math.floor(Math.random() * activePromoCodes.length)].code;
+
+            let text = `السلام عليكم مركز النجوم للإلكترونيات 🎮\n`;
+            text += `💰 السعر الإجمالي: ${totalPrice.toLocaleString()} دينار عراقي (1,000 د.ع للعبة)\n`;
+            text += `🔑 كود الخصم المخصص لاستخدامه في المرة القادمة: ${randomAssignedCode}\n\n`;
+            text += `📋 قائمة الألعاب المختارة (${gamesArr.length}):\n`;
+            gamesArr.forEach((g, idx) => {
+                text += `${idx + 1}. ${g}\n`;
+            });
+            text += `\nأرجو تجهيز الطلب. الشكر الجزيل!`;
+
+            window.open(`https://wa.me/${SHOP_WHATSAPP}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        // أداة تشخيص الأعطال الهندسية
+        // =====================================================================
+        let diagState = { device: '', symptom: '', detail: '' };
+        
+        const diagnosticDB = {
+            'PS5': {
+                title: 'بلايستيشن 5 (PS5)',
+                symptoms: [
+                    { id: 'no_power', name: 'الجهاز لا يعمل أبداً (لا إضاءة ولا صوت)', title: 'تلف وحدة الباور سبلاي الداخلية (Power Supply)', desc: 'غالباً بسبب تذبذب التيار الكهربائي أو احتراق الفيوز الداخلي في الباور.', time: 'ساعتان إلى 3 ساعات', cost: '45,000 إلى 75,000 د.ع' },
+                    { id: 'hdmi_no_signal', name: 'الجهاز يشتغل لكن لا يوجد عرض على الشاشة (No Signal)', title: 'تلف آيسي الـ HDMI أو المنفذ المادي', desc: 'بسبب صدمة بالكيبل أو تلف شريحة التحكم بالصورة والصوت داخل البورد.', time: 'ساعة إلى ساعتان', cost: '35,000 إلى 50,000 د.ع' },
+                    { id: 'overheat_shutdown', name: 'الجهاز يطفي فجأة أثناء اللعب (تحذير ارتفاع حرارة)', title: 'تراكم الغبار وتجفوف المعدن السائل (Liquid Metal)', desc: 'يحتاج تنظيف شامل لممرات الهواء وإعادة توزيع المعدن السائل على المعالج.', time: 'ساعة واحدة', cost: '25,000 د.ع' }
+                ]
+            },
+            'PS4': {
+                title: 'بلايستيشن 4 (PS4)',
+                symptoms: [
+                    { id: 'blue_light', name: 'الضوء الأزرق يومض ولا تظهر صورة (BLOD)', title: 'مشكلة في المعالج الرئيسي (APU) أو الـ RAM', desc: 'يحتاج فحص دقيق لدوائر الطاقة ومعالجة الـ Reballing باحترافية.', time: '3 إلى 5 ساعات', cost: '40,000 إلى 70,000 د.ع' },
+                    { id: 'loud_fan', name: 'صوت المروحة عالي جداً كأنها طائرة', title: 'انسداد مبرد الهواء بالاتساخ وتلف المعجون الحراري', desc: 'استبدال المعجون القديم بمعجون أصلي Arctic MX-4 وتنظيف المروحة بالكامل.', time: '45 دقيقة', cost: '15,000 إلى 20,000 د.ع' },
+                    { id: 'disc_eject', name: 'إخراج الأسطوانة تلقائياً أو عدم سحب الشريط', title: 'عطل في حساس الـ Eject أو ميكانيزم البليຼ رير', desc: 'تنظيف الحساس أو استبدال مفتاح اللمس الخاص بالسوفت.', time: 'ساعة واحدة', cost: '20,000 د.ع' }
+                ]
+            },
+            'PC': {
+                title: 'حاسبة جيمنج أو لابتوب (PC)',
+                symptoms: [
+                    { id: 'blue_screen', name: 'تظهر شاشة زرقاء متكررة (Blue Screen)', title: 'مشكلة توافق تعاريف أو تلف في الرام (RAM)', desc: 'فحص فلاشات الرام، تنظيف السلوتات، وفحص أقراص الـ NVMe.', time: 'ساعة إلى ساعتان', cost: '15,000 إلى 30,000 د.ع' },
+                    { id: 'slow_win', name: 'بطء شديد في الإقلاع وتشغيل الألعاب', title: 'النظام ممتلئ بالملفات المؤقتة أو الهارد بطيء', desc: 'ترقية القرص إلى M.2 NVMe سريع جداً وإعادة تنصيب ويندوز نظيف.', time: 'ساعة ونصف', cost: '20,000 د.ع (بدون قيمة الهارد الجديد)' }
+                ]
+            },
+            'Controller': {
+                title: 'قبضة تحكم (DualSense / DualShock)',
+                symptoms: [
+                    { id: 'stick_drift', name: 'تحرك الشخصية وحدها (انحراف الجير / Stick Drift)', title: 'تلف الحساس الداخلي للبوتنشوميتر (Joystick Module)', desc: 'استبدال قطب الجير التالف بقطب جديد عالي الدقة.', time: '30 دقيقة', cost: '15,000 د.ع' },
+                    { id: 'no_charge', name: 'القبضة لا تشحن ولا تستجيب', title: 'تلف آيسي الشحن أو منفذ الـ Type-C', desc: 'تبديل المنفذ أو تصليح دائرة الشحن الداخلية.', time: '45 دقيقة', cost: '12,000 د.ع' }
+                ]
+            }
+        };
+
+        function selectDiagDevice(devKey) {
+            playClickSound();
+            diagState.device = devKey;
+            document.getElementById('diag-step-ind-1').className = "h-2 rounded-full bg-slate-800 transition-all";
+            document.getElementById('diag-step-ind-2').className = "h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_#00E5FF]";
+            document.getElementById('diag-step-1').classList.add('hidden');
+            document.getElementById('diag-step-2').classList.remove('hidden');
+
+            const container = document.getElementById('diag-symptoms-container');
+            const data = diagnosticDB[devKey];
+            container.innerHTML = data.symptoms.map(s => `
+                <button onclick="selectDiagSymptom('${s.id}')" class="ps-card-hover p-4 rounded-2xl bg-slate-900/80 border border-white/10 text-right flex items-center justify-between cursor-pointer">
+                    <span class="font-bold text-white text-sm">${s.name}</span>
+                    <i class="ph-bold ph-caret-left text-cyan-400"></i>
+                </button>
+            `).join('');
+        }
+
+        function selectDiagSymptom(symId) {
+            playClickSound();
+            diagState.symptom = symId;
+            document.getElementById('diag-step-ind-2').className = "h-2 rounded-full bg-slate-800 transition-all";
+            document.getElementById('diag-step-ind-3').className = "h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_#00E5FF]";
+            document.getElementById('diag-step-2').classList.add('hidden');
+
+            const data = diagnosticDB[diagState.device].symptoms.find(x => x.id === symId);
+            document.getElementById('diag-step-3').classList.add('hidden');
+            document.getElementById('diag-result').classList.remove('hidden');
+
+            document.getElementById('res-device-badge').textContent = diagnosticDB[diagState.device].title;
+            document.getElementById('res-fault-title').textContent = data.title;
+            document.getElementById('res-fault-desc').textContent = data.desc;
+            document.getElementById('res-time').textContent = data.time;
+            document.getElementById('res-cost').textContent = data.cost;
+        }
+
+        function resetDiagnostic() {
+            playClickSound();
+            diagState = { device: '', symptom: '', detail: '' };
+            document.getElementById('diag-step-ind-1').className = "h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_#00E5FF]";
+            document.getElementById('diag-step-ind-2').className = "h-2 rounded-full bg-slate-800 transition-all";
+            document.getElementById('diag-step-ind-3').className = "h-2 rounded-full bg-slate-800 transition-all";
+            document.getElementById('diag-result').classList.add('hidden');
+            document.getElementById('diag-step-3').classList.add('hidden');
+            document.getElementById('diag-step-2').classList.add('hidden');
+            document.getElementById('diag-step-1').classList.remove('hidden');
+        }
+
+        function bookRepairWhatsApp() {
+            playClickSound();
+            const fault = document.getElementById('res-fault-title').textContent;
+            const dev = document.getElementById('res-device-badge').textContent;
+            const cost = document.getElementById('res-cost').textContent;
+            const text = `السلام عليكم مركز النجوم للإلكترونيات 🛠️\nأرغب بحجز موعد صيانة لجهازي:\n\n📱 الجهاز: ${dev}\n⚠️ التشخيص: ${fault}\n💵 التكلفة التقديرية: ${cost}\n\nأرجو تأكيد الموعد لاستلام الجهاز في محلكم بحي السلام، النجف الأشرف.`;
+            window.open(`https://wa.me/${SHOP_WHATSAPP}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        // نوافذ الـ Modals
+        function toggleCustomGameModal(show) {
+            playClickSound();
+            const modal = document.getElementById('customGameModal');
+            if (!modal) return;
+            if (show) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function submitCustomGameRequest(e) {
+            e.preventDefault();
+            playClickSound();
+            const gameName = document.getElementById('customGameName').value;
+            const platform = document.getElementById('customGamePlatform').value;
+            const lang = document.getElementById('customGameLang').value;
+
+            const text = `السلام عليكم مركز النجوم للإلكترونيات 🎮\nأرغب بطلب لعبة غير موجودة بالقائمة:\n\n🕹️ اسم اللعبة: ${gameName}\n💻 الجهاز: ${platform}\n🌐 الترجمة: ${lang}\n\nأرجو توفيرها في أقرب وقت. الشكر الجزيل!`;
+            toggleCustomGameModal(false);
+            window.open(`https://wa.me/${SHOP_WHATSAPP}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+        // التهيئة الأولية عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            renderLibraryGames();
+            renderGames();
+            updateStorageUI();
+            renderMarket();
+        });
+    </script>
+</body>
+</html>
