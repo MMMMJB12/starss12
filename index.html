@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز النجوم للإلكترونيات | النجف الأشرف</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: radial-gradient(circle at 20% 20%, #002b6b 0%, #030a1c 45%, #010409 100%);
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .ps-waves {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .ps-waves::before, .ps-waves::after {
+            content: "";
+            position: absolute;
+            width: 180%;
+            height: 180%;
+            top: -40%;
+            left: -40%;
+            background: radial-gradient(ellipse at center, rgba(0, 112, 209, 0.16) 0%, transparent 60%);
+            animation: waveFloat 16s ease-in-out infinite alternate;
+        }
+        .ps-waves::after {
+            background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.1) 0%, transparent 55%);
+            animation-duration: 22s;
+            animation-direction: alternate-reverse;
+        }
+        @keyframes waveFloat {
+            0% { transform: translate(-4%, -3%) rotate(0deg) scale(1); }
+            100% { transform: translate(4%, 3%) rotate(8deg) scale(1.08); }
+        }
+
+        .ps-glass {
+            background: rgba(10, 20, 42, 0.78);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(96, 165, 250, 0.22);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
+        }
+        .ps-game-card {
+            background: rgba(13, 25, 52, 0.82);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .ps-game-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            border-color: #38bdf8;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.35);
+        }
+
+        .ps-nav-item {
+            transition: all 0.25s ease;
+            border: 1px solid transparent;
+        }
+        .ps-nav-item.active {
+            background: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.45);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            transform: scale(1.05);
+        }
+
+        @keyframes boxUnlock {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-8deg); }
+            50% { transform: scale(1.1) rotate(8deg); }
+            75% { transform: scale(1.15) rotate(-5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        .animate-unlock { animation: boxUnlock 0.6s ease-in-out; }
+
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(100%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            animation: marquee 30s linear infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-28">
+
+    <div class="ps-waves"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-slate-950/75 backdrop-blur-xl border-b border-blue-400/20">
+        <div class="container mx-auto px-4 py-3 flex flex-col lg:flex-row justify-between items-center gap-3">
+            
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-900 flex items-center justify-center border border-sky-400/50 shadow-lg shadow-blue-500/30">
+                    <i class="fa-brands fa-playstation text-2xl text-white"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-lg md:text-xl font-black text-white tracking-wide">مركز النجوم للإلكترونيات</h1>
+                        <span class="text-[10px] bg-sky-500/20 text-sky-300 border border-sky-400/30 px-2 py-0.5 rounded-full font-bold">PS4 • PS5</span>
+                    </div>
+                    <p class="text-[11px] text-slate-300">النجف الأشرف - حي السلام (أربع شوارع، مقابيل مسبح أمواج) | 07840022295</p>
+                </div>
+            </div>
+
+            <nav class="flex items-center gap-2 flex-wrap justify-center">
+                <button onclick="psNavSound(); switchSection('games', this)" class="ps-nav-item active px-4 py-2 rounded-2xl text-xs md:text-sm font-bold text-white flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-gamepad text-sky-400"></i> مكتبة الألعاب (226)
+                </button>
+                <button onclick="psNavSound(); switchSection('mystery', this)" class="ps-nav-item px-4 py-2 rounded-2xl text-xs md:text-sm font-bold text-amber-300 flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-lock text-amber-400" id="boxNavIcon"></i> صندوق المكافآت المؤمّن
+                </button>
+                <button onclick="psNavSound(); switchSection('repair', this)" class="ps-nav-item px-4 py-2 rounded-2xl text-xs md:text-sm font-bold text-slate-200 flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-stethoscope text-emerald-400"></i> ورشة الصيانة والتشخيص
+                </button>
+                <a href="https://wa.me/9647840022295" target="_blank" onclick="psClickSound()" class="bg-emerald-600/90 hover:bg-emerald-500 text-white px-4 py-2 rounded-2xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-lg transition">
+                    <i class="fa-brands fa-whatsapp text-base"></i> واتساب
+                </a>
+            </nav>
+
+            <div class="hidden xl:flex items-center gap-3 text-xs text-slate-300 bg-white/5 px-3.5 py-2 rounded-2xl border border-white/10">
+                <button onclick="toggleMute()" id="muteBtn" class="text-sky-400 hover:text-white cursor-pointer" title="تشغيل/كتم الصوت">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+                <span class="text-slate-600">|</span>
+                <span id="psClock" class="font-bold tracking-wider">00:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ticker -->
+    <div class="bg-blue-950/60 border-b border-sky-500/20 py-1.5 overflow-hidden text-xs">
+        <div class="whitespace-nowrap animate-marquee gap-12 text-sky-200 font-bold">
+            <span>△ ○ ✕ □ أهلاً بكم في مركز النجوم للإلكترونيات — النجف الأشرف</span>
+            <span>🎁 اطلب 5 ألعاب أو أكثر واحصل على كود هدية مجاني لصندوق المكافآت!</span>
+            <span>🔥 سعر تحميل جميع الألعاب 1,000 دينار عراقي فقط لكل لعبة!</span>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="container mx-auto px-4 py-6 flex-grow">
+
+        <!-- ========================================== -->
+        <!-- SECTION 1: GAMES LIBRARY                   -->
+        <!-- ========================================== -->
+        <section id="sec-games" class="space-y-6">
+            <div class="ps-glass rounded-3xl p-5">
+                <div class="flex flex-col lg:flex-row justify-between items-center gap-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-400 text-2xl">
+                            <i class="fa-solid fa-hard-drive"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-base md:text-lg font-black text-white">مكتبة الألعاب وحاسبة مساحة الهارد المدمجة</h2>
+                            <p class="text-xs text-slate-300">اختر 5 ألعاب أو أكثر لتحصل على كود هدية خاص في طلبك!</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 flex-wrap justify-center">
+                        <span class="text-xs font-bold text-slate-300">حجم الهارد:</span>
+                        <button onclick="psClickSound(); setHdd(400, this)" class="hdd-btn bg-sky-600 text-white px-3.5 py-1.5 rounded-xl text-xs font-black shadow cursor-pointer">500 GB (صافي 400)</button>
+                        <button onclick="psClickSound(); setHdd(850, this)" class="hdd-btn bg-white/10 hover:bg-white/20 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer">1 TB (صافي 850)</button>
+                        <button onclick="psClickSound(); setHdd(1750, this)" class="hdd-btn bg-white/10 hover:bg-white/20 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer">2 TB (صافي 1750)</button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950/75 rounded-2xl p-4 border border-white/10">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center mb-3">
+                        <div class="bg-white/5 p-2.5 rounded-xl">
+                            <span class="block text-[11px] text-slate-400">عدد الألعاب</span>
+                            <span id="statCount" class="text-lg font-black text-sky-400">0 لعبة</span>
+                        </div>
+                        <div class="bg-white/5 p-2.5 rounded-xl">
+                            <span class="block text-[11px] text-slate-400">المساحة المطلوبة</span>
+                            <span id="statUsed" class="text-lg font-black text-amber-400">0 GB</span>
+                        </div>
+                        <div class="bg-white/5 p-2.5 rounded-xl">
+                            <span class="block text-[11px] text-slate-400">المتبقي بالهارد</span>
+                            <span id="statRem" class="text-lg font-black text-emerald-400">400 GB</span>
+                        </div>
+                        <div class="bg-white/5 p-2.5 rounded-xl">
+                            <span class="block text-[11px] text-slate-400">المبلغ الكلي</span>
+                            <span id="statPrice" class="text-lg font-black text-white">0 د.ع</span>
+                        </div>
+                    </div>
+
+                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden p-0.5">
+                        <div id="hddProgress" class="bg-gradient-to-l from-sky-400 to-emerald-400 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between items-center mt-2 text-[11px]">
+                        <span id="promoNotice" class="text-amber-300 font-bold">✨ أضف (5) ألعاب أو أكثر لتحصل على كود هدية مجاني!</span>
+                        <button onclick="psClickSound(); clearAllGames()" class="text-rose-400 hover:text-rose-300 underline cursor-pointer">مسح الاختيارات</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-3 justify-between items-center">
+                <div class="relative w-full md:w-96">
+                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-slate-400"></i>
+                    <input type="text" id="searchInput" oninput="renderGames()" placeholder="ابحث عن لعبة من بين 226 لعبة..."
+                        class="w-full bg-slate-900/90 border border-sky-500/30 rounded-2xl pr-11 pl-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400">
+                </div>
+
+                <div class="flex gap-2 flex-wrap justify-center">
+                    <button onclick="psClickSound(); setCat('all', this)" class="cat-btn bg-sky-600 text-white px-4 py-2 rounded-xl text-xs font-black cursor-pointer">الكل (226)</button>
+                    <button onclick="psClickSound(); setCat('arabic', this)" class="cat-btn bg-white/10 hover:bg-white/20 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer">معرّبة 🇮🇶</button>
+                    <button onclick="psClickSound(); setCat('action', this)" class="cat-btn bg-white/10 hover:bg-white/20 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer">أكشن ومغامرات</button>
+                    <button onclick="psClickSound(); setCat('sport', this)" class="cat-btn bg-white/10 hover:bg-white/20 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer">كرة وسيارات</button>
+                    <button onclick="psClickSound(); setCat('horror', this)" class="cat-btn bg-white/10 hover:bg-white/20 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer">رعب وبقاء</button>
+                </div>
+            </div>
+
+            <div id="gamesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: SECURE MYSTERY BOX              -->
+        <!-- ========================================== -->
+        <section id="sec-mystery" class="hidden max-w-2xl mx-auto">
+            <div class="ps-glass rounded-3xl p-6 md:p-8 text-center border border-amber-400/30">
+                <div class="inline-flex items-center gap-2 bg-amber-500/20 text-amber-300 border border-amber-400/30 px-4 py-1 rounded-full text-xs font-bold mb-4">
+                    <i class="fa-solid fa-gift"></i> صندوق المكافآت المؤمّن (يتطلب طلب 5 ألعاب فأكثر)
+                </div>
+                <h2 class="text-2xl md:text-3xl font-black text-white mb-2">صندوق الحظ والمكافآت المحمي</h2>
+                <p class="text-xs md:text-sm text-slate-300 mb-6">أدخل كود الهدية الذي استلمته في رسالة طلبك (يُستخدم لمرة واحدة فقط).</p>
+
+                <div class="my-6 flex flex-col items-center justify-center">
+                    <div id="lockedBoxVisual" class="w-36 h-36 rounded-3xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 flex items-center justify-center shadow-2xl border-2 border-slate-700">
+                        <i id="boxIconState" class="fa-solid fa-lock text-5xl text-amber-400"></i>
+                    </div>
+                </div>
+
+                <div id="mysteryResultArea" class="min-h-[75px] bg-slate-950/80 border border-white/10 rounded-2xl p-4 mb-5 flex flex-col items-center justify-center">
+                    <span class="text-sm text-slate-300 font-bold">🔒 الصندوق مؤمّن. اكتب الكود الخاص بك بالأسفل</span>
+                </div>
+
+                <div class="bg-slate-900/80 border border-amber-500/30 rounded-2xl p-4 max-w-md mx-auto">
+                    <label class="block text-xs font-bold text-amber-300 mb-2">أدخل الكود (مثال: NJ-105):</label>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="secretCodeInput" placeholder="NJ-000" class="flex-grow bg-slate-950 border border-sky-500/40 rounded-xl px-4 py-2.5 text-sm text-center font-black uppercase text-white focus:outline-none focus:border-amber-400">
+                        <button onclick="psClickSound(); unlockInfiniteBox()" class="bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-95 text-slate-950 font-black px-6 py-2.5 rounded-xl text-sm cursor-pointer shadow-lg">
+                            التحقق وفتح الصندوق 🔓
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 3: REPAIR & DIAGNOSTICS            -->
+        <!-- ========================================== -->
+        <section id="sec-repair" class="hidden space-y-6">
+            <div class="ps-glass rounded-3xl p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 text-2xl">
+                        <i class="fa-solid fa-stethoscope"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-black text-white">نظام التخمين الفوري لأعطال الأجهزة والقبضات</h2>
+                        <p class="text-xs text-slate-300">اختر جهازك والعطل وسيعطيك النظام التشخيص التقني، السبب، والتكلفة التقديرية فوراً</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 bg-slate-950/80 p-5 md:p-6 rounded-3xl border border-white/10 mb-6 shadow-inner">
+                    <div>
+                        <label class="block text-xs font-bold text-sky-300 mb-2">1. حدد نوع الجهاز:</label>
+                        <select id="diagDevice" onchange="psClickSound(); runDiagnostic()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-sky-400">
+                            <option value="ps4">PlayStation 4 (Fat / Slim / Pro)</option>
+                            <option value="ps5">PlayStation 5</option>
+                            <option value="ps3">PlayStation 3</option>
+                            <option value="xbox">Xbox (Series S / One / 360)</option>
+                            <option value="controller">قبضة تحكم (DualShock 4 / DualSense)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-sky-300 mb-2">2. حدد المشكلة أو العطل:</label>
+                        <select id="diagIssue" onchange="psClickSound(); runDiagnostic()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-sky-400">
+                            <option value="heat">صوت مروحة عالي أو الجهاز يطفى من الحرارة</option>
+                            <option value="power">الجهاز لا يعمل نهائياً أو يشتغل ثواني ويطفى (Power Issue)</option>
+                            <option value="hdmi">الجهاز يشتغل لكن لا توجد صورة على الشاشة (HDMI Port)</option>
+                            <option value="hdd">تعليق، بطء، أو رسالة خطأ في النظام والهارد</option>
+                            <option value="stick">انحراف بالأنالوج (Drift) أو أزرار القبضة لا تستجيب</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2 bg-gradient-to-br from-blue-950/80 to-slate-900 border border-sky-500/40 rounded-2xl p-5 flex flex-col gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-sky-500/20 pb-4">
+                            <div>
+                                <span class="text-[11px] text-sky-300 font-bold block mb-1">السبب التقني المتوقع:</span>
+                                <span id="estCause" class="text-xs font-bold text-white">ارتفاع حرارة المعالج بسبب جفاف المعجون الحراري وتراكم الأتربة.</span>
+                            </div>
+                            <div>
+                                <span class="text-[11px] text-amber-300 font-bold block mb-1">التكلفة التقديرية:</span>
+                                <span id="estPrice" class="text-sm font-black text-amber-400">15,000 إلى 25,000 د.ع</span>
+                            </div>
+                            <div>
+                                <span class="text-[11px] text-emerald-300 font-bold block mb-1">وقت الإصلاح الفوري:</span>
+                                <span id="estTime" class="text-xs font-bold text-white">من 45 إلى 60 دقيقة</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
+                            <span class="text-xs text-slate-300" id="estDetails">التنظيف يشمل المشتت الحراري وتبديل المعجون بمعجون أصلي (MX-4 / MX-7).</span>
+                            <button onclick="psClickSound(); sendRepairWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl font-black text-xs whitespace-nowrap flex items-center gap-2 shadow-lg transition cursor-pointer">
+                                <i class="fa-brands fa-whatsapp text-base"></i> حجز الصيانة وإرسال التخمين
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white/5 border border-white/10 p-5 rounded-2xl">
+                        <i class="fa-solid fa-microchip text-2xl text-sky-400 mb-2"></i>
+                        <h3 class="font-bold text-white text-sm mb-1">صيانة الهاردوير والبورد</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">تبديل آيسي HDMI، إصلاح دائرة الباور، وإعادة تدفق المعالج (BGA Reballing).</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 p-5 rounded-2xl">
+                        <i class="fa-solid fa-gamepad text-2xl text-amber-400 mb-2"></i>
+                        <h3 class="font-bold text-white text-sm mb-1">تصليح القبضات الاحترافي</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">تركيب أنالوج مغناطيسي ضد الانحراف، استبدال شريط الأزرار والمطاط.</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 p-5 rounded-2xl">
+                        <i class="fa-solid fa-wand-magic-sparkles text-2xl text-emerald-400 mb-2"></i>
+                        <h3 class="font-bold text-white text-sm mb-1">البرمجيات والأنظمة</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">تهكير وتحديث أنظمة GoldHEN، تنصيب الألعاب المعربة، وحل مشاكل السوفتوير.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Floating Bottom Bar for Games Order -->
+    <div id="cartBar" class="fixed bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-xl border-t border-sky-400/40 py-3 px-4 z-40 transform translate-y-full transition-transform duration-300 shadow-2xl">
+        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-sky-600 text-white w-11 h-11 rounded-2xl flex items-center justify-center font-black text-lg shadow-lg" id="barCount">0</div>
+                <div>
+                    <div class="text-sm font-black text-white">
+                        المجموع: <span id="barPrice" class="text-emerald-400">0</span> د.ع 
+                        <span class="text-slate-500 mx-1">|</span> 
+                        المساحة: <span id="barSize" class="text-amber-400">0 GB</span>
+                    </div>
+                    <p id="barPromoStatus" class="text-[11px] text-amber-300 font-bold">أضف 5 ألعاب لتحصل على كود هدية!</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <input type="text" id="orderPrevCode" placeholder="كود سابق (إن وجد)" class="bg-slate-900 border border-slate-700 px-3 py-2 rounded-xl text-xs text-white focus:outline-none focus:border-sky-400 w-36">
+                <button onclick="psSuccessSound(); submitGamesWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-lg transition cursor-pointer flex-grow sm:flex-grow-0">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> إرسال الألعاب
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Code Issued ONLY If 5+ Games -->
+    <div id="codeIssuedModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="ps-glass max-w-md w-full p-6 rounded-3xl text-center border border-emerald-400/40 relative">
+            <button onclick="closeIssuedModal()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-xl cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-3 text-3xl border border-emerald-400/30">
+                <i class="fa-solid fa-gift"></i>
+            </div>
+            <h3 class="text-xl font-black text-white mb-2">مبروك! لقد طلبت 5 ألعاب فأكثر 🎁</h3>
+            <p class="text-xs text-slate-300 mb-4">تم توليد كود هدية فريد لطلبك (يُستخدم لمرة واحدة فقط):</p>
+            <div class="bg-slate-950 border-2 border-dashed border-amber-400 py-3 px-6 rounded-2xl mb-4">
+                <span id="issuedCodeDisplay" class="text-2xl font-black tracking-widest text-amber-400">NJ-101</span>
+            </div>
+            <button onclick="closeIssuedModal()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm w-full cursor-pointer">حسناً وإرسال للواتساب</button>
+        </div>
+    </div>
+
+    <script>
+        let isMuted = false;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('muteBtn').innerHTML = isMuted
+                ? '<i class="fa-solid fa-volume-xmark text-rose-400"></i>'
+                : '<i class="fa-solid fa-volume-high"></i>';
+        }
+
+        function psNavSound() {
+            if (isMuted) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(520, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(780, audioCtx.currentTime + 0.09);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.11);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.11);
+            } catch (e) {}
+        }
+
+        function psClickSound() {
+            if (isMuted) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.06);
+                gain.gain.setValueAtTime(0.07, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.07);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.07);
+            } catch (e) {}
+        }
+
+        function psSuccessSound() {
+            if (isMuted) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    const start = audioCtx.currentTime + idx * 0.07;
+                    osc.frequency.setValueAtTime(freq, start);
+                    gain.gain.setValueAtTime(0.07, start);
+                    gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(start);
+                    osc.stop(start + 0.35);
+                });
+            } catch (e) {}
+        }
+
+        setInterval(() => {
+            const now = new Date();
+            const el = document.getElementById('psClock');
+            if (el) el.textContent = now.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' });
+        }, 1000);
+
+        function switchSection(secName, btn) {
+            ['games', 'mystery', 'repair'].forEach(s => {
+                document.getElementById('sec-' + s).classList.add('hidden');
+            });
+            document.getElementById('sec-' + secName).classList.remove('hidden');
+
+            document.querySelectorAll('.ps-nav-item').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            updateHddAndCart();
+        }
+
+        // ==========================================
+        // REPAIR DIAGNOSTIC DATABASE
+        // ==========================================
+        const diagnosticDatabase = {
+            heat: {
+                cause: "ارتفاع حرارة المعالج بسبب جفاف المعجون الحراري وتراكم الأتربة داخل المشتت.",
+                price: "15,000 إلى 25,000 د.ع",
+                time: "45 إلى 60 دقيقة",
+                details: "تنظيف شامل، تبديل المعجون الحراري بأصلي (MX-4 / MX-7)، وفحص كفاءة المروحة."
+            },
+            power: {
+                cause: "تلف في دائرة الباور سبلاي الداخلية (Power Supply) أو احتراق مكثفات الحماية نتيجة تذبذب التيار.",
+                price: "25,000 إلى 45,000 د.ع",
+                time: "ساعة إلى ساعتين",
+                details: "فحص الباور سبلاي، إصلاح الدائرة أو استبدال القطع التالفة بقطع أصلية."
+            },
+            hdmi: {
+                cause: "تلف في آيسي الإخراج (HDMI Encoder IC) أو انحناء في دبابيس منفذ الـ HDMI بسبب الكابل.",
+                price: "30,000 إلى 50,000 د.ع",
+                time: "ساعتين إلى 3 ساعات",
+                details: "رفع المنفذ أو الآيسي التالف وتركيب قطعة جديدة أصلية مع إعادة اللحام بدقة."
+            },
+            hdd: {
+                cause: "وجود قطاعات تالفة (Bad Sectors) في الهاردسك أو تلف في ملفات نظام التشغيل (System Software).",
+                price: "10,000 د.ع (سوفتوير) أو حسب سعر الهارد الجديد",
+                time: "ساعة واحدة",
+                details: "فحص الهارد، إعادة تنصيب النظام (System Software) أو ترقية لـ SSD سريع."
+            },
+            stick: {
+                cause: "تآكل في تروس ومقاومات الأنالوج الداخلية بسبب الأوساخ (Stick Drift) أو تلف أشرطة التوصيل.",
+                price: "10,000 إلى 15,000 د.ع للقبضة",
+                time: "30 دقيقة",
+                details: "تبديل الأنالوج بقطعة مغناطيسية متطورة أو استبدال شريط الأزرار الداخلي (Ribbon Film)."
+            }
+        };
+
+        function runDiagnostic() {
+            const issueKey = document.getElementById('diagIssue').value;
+            const data = diagnosticDatabase[issueKey] || diagnosticDatabase['heat'];
+            document.getElementById('estCause').textContent = data.cause;
+            document.getElementById('estPrice').textContent = data.price;
+            document.getElementById('estTime').textContent = data.time;
+            document.getElementById('estDetails').textContent = data.details;
+        }
+
+        function sendRepairWhatsApp() {
+            const dev = document.getElementById('diagDevice').options[document.getElementById('diagDevice').selectedIndex].text;
+            const iss = document.getElementById('diagIssue').options[document.getElementById('diagIssue').selectedIndex].text;
+            const price = document.getElementById('estPrice').textContent;
+            const msg = `مرحباً مركز النجوم، أرغب بحجز صيانة للجهاز:\n🎮 الجهاز: ${dev}\n⚠️ العطل: ${iss}\n💰 التكلفة التقديرية: ${price}`;
+            window.open(`https://wa.me/9647840022295?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        // ==========================================
+        // SECURE MYSTERY BOX & 5+ GAMES CONDITION
+        // ==========================================
+        const giftPool = [
+            "مبروك ربحت تحميل لعبة واحدة مجاناً! 🎮",
+            "مبروك ربحت خصم 50% على تنزيل الألعاب! 🔥",
+            "مبروك ربحت خصم 25% على الصيانة! 🛠️",
+            "مبروك ربحت خصم 10% على أي شيء بالمحل! ⭐",
+            "مبروك ربحت كيبل شحن نوع تايب سي! 🔌",
+            "مبروك ربحت كيبل شحن نوع آيفون! 📱",
+            "مبروك ربحت 3 لعبات مجانية! 🎁🎉"
+        ];
+
+        function generateInfiniteCode() {
+            let nextNum = parseInt(localStorage.getItem('nj_next_code_num') || '101', 10);
+            const generatedCode = `NJ-${nextNum}`;
+            localStorage.setItem('nj_next_code_num', nextNum + 1);
+            return generatedCode;
+        }
+
+        let lastIssuedCode = "";
+
+        function submitGamesWhatsApp() {
+            if (selectedIds.length === 0) return;
+            const chosen = gamesList.filter(g => selectedIds.includes(g.id));
+            const prevCode = document.getElementById('orderPrevCode').value.trim();
+            
+            let msg = `قائمة الألعاب المطلوبة (${chosen.length} لعبة):\n`;
+            chosen.forEach((g, i) => { msg += `${i + 1}- ${g.name}\n`; });
+            if (prevCode) msg += `\nكود الهدية السابق: ${prevCode}`;
+
+            // الشرط: إذا كان عدد الألعاب 5 أو أكثر، يتم توليد كود هدية جديد
+            if (chosen.length >= 5) {
+                lastIssuedCode = generateInfiniteCode();
+                msg += `\n🎁 كود الهدية الجديد (5 ألعاب فأكثر): ${lastIssuedCode}`;
+                
+                document.getElementById('issuedCodeDisplay').textContent = lastIssuedCode;
+                document.getElementById('codeIssuedModal').classList.remove('hidden');
+            } else {
+                // أقل من 5 ألعاب بدون كود
+                window.open(`https://wa.me/9647840022295?text=${encodeURIComponent(msg)}`, '_blank');
+            }
+        }
+
+        function closeIssuedModal() {
+            document.getElementById('codeIssuedModal').classList.add('hidden');
+            const chosen = gamesList.filter(g => selectedIds.includes(g.id));
+            const prevCode = document.getElementById('orderPrevCode').value.trim();
+            let msg = `قائمة الألعاب المطلوبة (${chosen.length} لعبة):\n`;
+            chosen.forEach((g, i) => { msg += `${i + 1}- ${g.name}\n`; });
+            if (prevCode) msg += `\nكود الهدية السابق: ${prevCode}`;
+            msg += `\n🎁 كود الهدية الجديد: ${lastIssuedCode}`;
+            window.open(`https://wa.me/9647840022295?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function unlockInfiniteBox() {
+            let codeInput = document.getElementById('secretCodeInput').value.trim().toUpperCase();
+            const resArea = document.getElementById('mysteryResultArea');
+            const visualBox = document.getElementById('lockedBoxVisual');
+            const boxIcon = document.getElementById('boxIconState');
+            const boxNavIcon = document.getElementById('boxNavIcon');
+
+            if (!codeInput) {
+                resArea.innerHTML = `<span class="text-rose-400 text-xs font-bold">يرجى كتابة الكود أولاً!</span>`;
+                return;
+            }
+
+            if (!/^NJ-[0-9]+$/.test(codeInput)) {
+                psClickSound();
+                resArea.innerHTML = `<span class="text-rose-400 text-xs font-bold">صيغة الكود غير صحيحة! يجب أن يبدأ بـ NJ- متبوعاً برقم.</span>`;
+                return;
+            }
+
+            let usedCodes = JSON.parse(localStorage.getItem('nj_used_codes') || '[]');
+            if (usedCodes.includes(codeInput)) {
+                psClickSound();
+                resArea.innerHTML = `<span class="text-rose-400 text-xs font-bold">❌ تنبيه أمني: هذا الكود (${codeInput}) تم استخدامه مسبقاً ولا يمكن تكراره نهائياً!</span>`;
+                return;
+            }
+
+            const codeNum = parseInt(codeInput.split('-')[1], 10);
+            
+            if (codeNum % 5 === 0 || codeNum % 7 === 0) {
+                psClickSound();
+                usedCodes.push(codeInput);
+                localStorage.setItem('nj_used_codes', JSON.stringify(usedCodes));
+                resArea.innerHTML = `<span class="text-sky-300 text-xs font-bold mb-1">الكود (${codeInput}):</span><span class="text-slate-300 text-base font-bold">حظ أوفر في المرة القادمة 😅 (تم استهلاك هذا الكود).</span>`;
+                return;
+            }
+
+            const wonPrize = giftPool[codeNum % giftPool.length];
+            usedCodes.push(codeInput);
+            localStorage.setItem('nj_used_codes', JSON.stringify(usedCodes));
+
+            visualBox.classList.add('animate-unlock');
+            boxIcon.className = "fa-solid fa-unlock text-5xl text-emerald-400";
+            boxNavIcon.className = "fa-solid fa-unlock text-amber-400";
+            psSuccessSound();
+
+            resArea.innerHTML = `
+                <span class="text-xs text-sky-300 mb-1">تم فتح الصندوق بنجاح بواسطة الكود المؤمّن (${codeInput}) 🎉</span>
+                <span class="text-emerald-400 text-base md:text-lg font-black">${wonPrize}</span>
+                <span class="text-[11px] text-amber-300 mt-1">⚠️ تم تعطيل هذا الكود نهائياً ولن يعمل مرة أخرى.</span>
+            `;
+
+            setTimeout(() => { visualBox.classList.remove('animate-unlock'); }, 600);
+        }
+
+        // ==========================================
+        // GAMES LIST & OTHER FUNCTIONS
+        // ==========================================
+        const gamesList = [
+            { id: 1, name: "A Way Out", img: "A WAY 0UT=UP0006-CUSA07995_00.jpg", size: 22, cat: "action" },
+            { id: 2, name: "Aaru's Awakening", img: "Aaru's Awakening (EU  US).jpg", size: 3, cat: "action" },
+            { id: 3, name: "Air Conflicts Double Pack", img: "Air Conflicts Double Pack.jpg", size: 12, cat: "sport" },
+            { id: 4, name: "Air Conflicts", img: "air conflicts.jpg", size: 7, cat: "sport" },
+            { id: 5, name: "Alien Isolation", img: "ALIEN.ISOLATION.EUR.PS4.jpg", size: 24, cat: "horror" },
+            { id: 6, name: "Among the Sleep", img: "Among the Sleep.jpg", size: 3, cat: "horror" },
+            { id: 7, name: "Among Us", img: "among.jpg", size: 2, cat: "action" },
+            { id: 8, name: "Assassin's Creed Mirage", img: "Assassin's Creed Mirage[CUSA33151].jpg", size: 38, cat: "action" },
+            { id: 9, name: "Assassin's Creed Origins (Arabic 🇮🇶)", img: "Assassin's Creed Origins Arabic with 1.41.jpg", size: 48, cat: "arabic" },
+            { id: 10, name: "Assassin's Creed Rogue Remastered", img: "Assassin's Creed Rogue   Remastered.jpg", size: 12, cat: "action" },
+            { id: 11, name: "Assassin's Creed Syndicate", img: "Assassin's Creed Syndicate[CUSA02378].jpg", size: 43, cat: "action" },
+            { id: 12, name: "Assassin's Creed Unity (Arabic 🇮🇶)", img: "Assassin's Creed Unity Arabic PS4.jpg", size: 45, cat: "arabic" },
+            { id: 13, name: "Assassin's Creed Freedom Cry", img: "Assassins Creed Freedom Cry.jpg", size: 9, cat: "action" },
+            { id: 14, name: "Assassin's Creed Valhalla Ultimate", img: "Assassins Creed Valhalla Ultimate Edition v7.20[CUSA18522][Optional FIX].jpg", size: 75, cat: "action" },
+            { id: 15, name: "Assassin's Creed Valhalla Dawn of Ragnarok", img: "Assassins Creed Valhalla Ultimate Edition[CUSA18522][DAWN OF RAGNAROK DLC].jpg", size: 18, cat: "action" },
+            { id: 16, name: "Assassin's Creed Valhalla Siege of Paris", img: "Assassins Creed Valhalla Ultimate Edition[CUSA18522][THE SIEGE OF PARIS DLC].jpg", size: 12, cat: "action" },
+            { id: 17, name: "Assassin's Creed Valhalla Wrath of Druids", img: "Assassins Creed Valhalla Ultimate Edition[CUSA18522][Wrath of the Druids DLC].jpg", size: 11, cat: "action" },
+            { id: 18, name: "Assassin's Creed IV Black Flag", img: "Assassins.Creed.IV.Black.Flag.PS4-DUPLEX.jpg", size: 23, cat: "action" },
+            { id: 19, name: "Assassin's Creed Chronicles Trilogy", img: "Assassin's Creed  Chronicles Trilogy Pack[CUSA03440].jpg", size: 10, cat: "action" },
+            { id: 20, name: "Assetto Corsa Competizione", img: "Assetto Corsa Competizion[CUSA17266].jpg", size: 16, cat: "sport" },
+            { id: 21, name: "Assetto Corsa", img: "ASSETTO CORSA.jpg", size: 18, cat: "sport" },
+            { id: 22, name: "Attack on Titan Wings of Freedom", img: "attack on titan wings of freedom.jpg", size: 19, cat: "action" },
+            { id: 23, name: "Batman Arkham City", img: "BATMAN ARKHAM CITYE[CUSA02000].jpg", size: 32, cat: "action" },
+            { id: 24, name: "Batman Arkham Knight", img: "Batman Arkham Knight (CUSA00135).jpg", size: 52, cat: "action" },
+            { id: 25, name: "Batman Return to Arkham Asylum", img: "Batman Return to Arkham Arkham Asylum.jpg", size: 22, cat: "action" },
+            { id: 26, name: "Battlefield 1 Revolution", img: "Battlefield 1 Revolution[CUSA02387].jpg", size: 68, cat: "action" },
+            { id: 27, name: "Battlefield 4", img: "Battlefield 4 BY NABEEL.jpg", size: 38, cat: "action" },
+            { id: 28, name: "Battlefield Hardline", img: "Battlefield Hardline[CUSA00625].jpg", size: 46, cat: "action" },
+            { id: 29, name: "Battlefield V", img: "Battlefield V.jpg", size: 82, cat: "action" },
+            { id: 30, name: "Beyond Two Souls", img: "Beyond Two Souls.jpg", size: 34, cat: "action" },
+            { id: 31, name: "Bioshock Infinite", img: "Bioshock.Infinite ps4.jpg", size: 28, cat: "action" },
+            { id: 32, name: "Black", img: "black.jpg", size: 5, cat: "action" },
+            { id: 33, name: "Call of Duty Black Ops 6", img: "blak ops 6.jpg", size: 85, cat: "action" },
+            { id: 34, name: "Call of Duty Black Ops 2", img: "blakops2.jpg", size: 18, cat: "action" },
+            { id: 35, name: "Call of Duty Black Ops Cold War", img: "Call of Duty  Black Ops Cold War[CUSA15010][Zombies Base Installl.DLC].jpg", size: 95, cat: "action" },
+            { id: 36, name: "Call of Duty Modern Warfare", img: "Call of Duty  Modern Warfare[CUSA08829][Campaign.Pack DLC Pack 2].jpg", size: 88, cat: "action" },
+            { id: 37, name: "Call of Duty Advanced Warfare", img: "Call of Duty Advanced Warfare.jpg", size: 44, cat: "action" },
+            { id: 38, name: "Call of Duty Black Ops III", img: "Call of Duty Black Ops III.jpg", size: 58, cat: "action" },
+            { id: 39, name: "Call of Duty Infinite Warfare", img: "Call of Duty Infinite Warfare.jpg", size: 54, cat: "action" },
+            { id: 40, name: "Call of Duty Modern Warfare 2", img: "call of duty modern warfare 2[CUSA34029][CONTENT 2 LICENSE DLC].jpg", size: 78, cat: "action" },
+            { id: 41, name: "Call of Duty Modern Warfare 3", img: "Call of Duty Modern Warfare 3[CUSA23827][Multiplayer.Pack].jpg", size: 82, cat: "action" },
+            { id: 42, name: "Call of Duty Modern Warfare Remastered", img: "Call of Duty Modern Warfare Remastered.jpg", size: 48, cat: "action" },
+            { id: 43, name: "Call of Duty Vanguard", img: "Call of Duty Vanguard [CUSA29092][Campaign.Base..DLC].jpg", size: 65, cat: "action" },
+            { id: 44, name: "Call of Duty WWII", img: "Call of Duty WWII PS4 5.05UP0002-CUSA05969_00.jpg", size: 52, cat: "action" },
+            { id: 45, name: "Control", img: "CONTROL[CUSA11454].jpg", size: 28, cat: "action" },
+            { id: 46, name: "Crash Bandicoot 4 It's About Time", img: "crash 4 it's about time[CUSA23470].jpg", size: 32, cat: "action" },
+            { id: 47, name: "Crash Bandicoot N. Sane Trilogy", img: "Crash Bandicoot N. Sane Trilogy[DLC 1].jpg", size: 25, cat: "action" },
+            { id: 48, name: "Crash Team Racing Nitro Fueled", img: "Crash Team Racing Nitro Fueled[CUSA14876].jpg", size: 21, cat: "sport" },
+            { id: 49, name: "Cuphead", img: "Cuphead Delicious Last Course[CUSA20499][Update 1.04][FIX5.05.6.72.7.02].jpg", size: 5, cat: "action" },
+            { id: 50, name: "Dark Land", img: "dark lan.jpg", size: 4, cat: "action" },
+            { id: 51, name: "Dark Souls III The Fire Fades", img: "DARK SOULS III The Fire Fades Edition PS4.jpg", size: 26, cat: "action" },
+            { id: 52, name: "Days Gone", img: "Days Gone[CUSA15027].jpg", size: 46, cat: "horror" },
+            { id: 53, name: "Dead Island Definitive Edition", img: "Dead Island - Definitive Edition.jpg", size: 9, cat: "horror" },
+            { id: 54, name: "Dead or Alive 5 Last Round", img: "DEAD OR ALIVE 5 LAST ROUND (CUSA01778).jpg", size: 11, cat: "action" },
+            { id: 55, name: "Deadlight Director's Cut", img: "Deadlight Directors Cut.jpg", size: 5, cat: "horror" },
+            { id: 56, name: "Deadpool", img: "Deadpool.PS4-DUPLEX.jpg", size: 7, cat: "action" },
+            { id: 57, name: "Death Stranding", img: "Death Stranding[CUSA12605]FIX 5.05].jpg", size: 50, cat: "action" },
+            { id: 58, name: "Detroit Become Human", img: "Detroit Become Human[CUSA09417][UPDATE v1.08].jpg", size: 44, cat: "action" },
+            { id: 59, name: "Devil May Cry 5", img: "Devil.May.Cry.5.PS4-DUPLEX 6.72.jpg", size: 35, cat: "action" },
+            { id: 60, name: "DiRT Rally 2.0", img: "DiRT Rally 2.0 6.72.jpg", size: 42, cat: "sport" },
+            { id: 61, name: "DiRT 4", img: "DIRT4.jpg", size: 33, cat: "sport" },
+            { id: 62, name: "Disney Classic Aladdin & Lion King", img: "Disney Classic Games Aladdin and The Lion King.jpg", size: 3, cat: "action" },
+            { id: 63, name: "Dragon Ball Z FighterZ", img: "DRAGON BALL Z FIGHTER =EP0700-CUSA08992_00.jpg", size: 8, cat: "action" },
+            { id: 64, name: "Dragon Ball Xenoverse 2", img: "Dragonball Xenoverse 2.jpg", size: 15, cat: "action" },
+            { id: 65, name: "DreamWorks Dragons Dawn of New Riders", img: "DreamWorks Dragons Dawn of New Riders.jpg", size: 4, cat: "action" },
+            { id: 66, name: "DriveClub", img: "Drive Club.jpg", size: 32, cat: "sport" },
+            { id: 67, name: "Dying Light", img: "Dying Light PS4.jpg", size: 22, cat: "horror" },
+            { id: 68, name: "eFootball 2026", img: "eFootball 2026 BITBOX GAME[CUSA18648].jpg", size: 46, cat: "sport" },
+            { id: 69, name: "eFootball PES 2020", img: "eFootball PES 2020 By Mustafa.jpg", size: 38, cat: "sport" },
+            { id: 70, name: "eFootball PES 2021 (Smoke Patch)", img: "eFootball PES 2021[CUSA18740][Smoke Patch V3 21.3.6[Fix 5.05-6.72-7.02].jpg", size: 42, cat: "sport" },
+            { id: 71, name: "Elden Ring", img: "Elden Ring[CUSA28863].jpg", size: 48, cat: "action" },
+            { id: 72, name: "Fallout 4", img: "Fallout 4.jpg", size: 36, cat: "action" },
+            { id: 73, name: "Far Cry 5", img: "FAR CRY 5[CUSA05904].jpg", size: 42, cat: "action" },
+            { id: 74, name: "Far Cry Primal", img: "Far Cry Primal.jpg", size: 16, cat: "action" },
+            { id: 75, name: "Far Cry 6", img: "farcry6.jpg", size: 58, cat: "action" },
+            { id: 76, name: "Fat Princess Adventures", img: "Fat Princess Adventures.jpg", size: 6, cat: "action" },
+            { id: 77, name: "FIFA 17 (Arabic 🇮🇶)", img: "FIFA 17 Arabic.jpg", size: 38, cat: "arabic" },
+            { id: 78, name: "FIFA 18 (Arabic 🇮🇶)", img: "FIFA 18 Arabic.jpg", size: 41, cat: "arabic" },
+            { id: 79, name: "FIFA 19", img: "fifa 19[CUSA11609].jpg", size: 43, cat: "sport" },
+            { id: 80, name: "FIFA 26", img: "FIFA 26[CUSA52342].jpg", size: 52, cat: "sport" },
+            { id: 81, name: "FIFA 20", img: "FIFA.20[CUSA15545].jpg", size: 45, cat: "sport" },
+            { id: 82, name: "Final Fantasy VII Remake", img: "Final Fantasy VII.jpg", size: 84, cat: "action" },
+            { id: 83, name: "FlatOut 4 Total Insanity", img: "flatout 4 total insanity ps4.jpg", size: 11, cat: "sport" },
+            { id: 84, name: "Forbidden Siren", img: "FORBIDDEN SIREN.jpg", size: 4, cat: "horror" },
+            { id: 85, name: "Ghost of Tsushima Director's Cut", img: "Ghost of Tsushima Directors Cut[CUSA11456].jpg", size: 62, cat: "action" },
+            { id: 86, name: "Ghostbusters", img: "Ghostbusters PS4.jpg", size: 14, cat: "action" },
+            { id: 87, name: "God of War 1", img: "god of war 1.jpg", size: 9, cat: "action" },
+            { id: 88, name: "God of War 4", img: "GOD OF WAR 4.jpg", size: 46, cat: "action" },
+            { id: 89, name: "God of War Ragnarok", img: "God of War Ragnarok[CUSA34390].jpg", size: 86, cat: "action" },
+            { id: 90, name: "God of War 3 Remastered", img: "god of war3.jpg", size: 41, cat: "action" },
+            { id: 91, name: "God of War (CUSA07410)", img: "God of War[CUSA07410].jpg", size: 45, cat: "action" },
+            { id: 92, name: "Godzilla", img: "Godzilla (USA).jpg", size: 6, cat: "action" },
+            { id: 93, name: "Gran Turismo Sport", img: "Gran Turismo Sport[CUSA02168].jpg", size: 65, cat: "sport" },
+            { id: 94, name: "Gravity Rush 2", img: "Gravity.Rush.2.PS4-DUPLEX.jpg", size: 18, cat: "action" },
+            { id: 95, name: "GTA V (By Nabeel)", img: "GTA BY NABEEL.jpg", size: 68, cat: "action" },
+            { id: 96, name: "GTA San Andreas", img: "gta san.jpg", size: 4, cat: "action" },
+            { id: 97, name: "GTA Trilogy / Edition", img: "gta ??????.jpg", size: 24, cat: "action" },
+            { id: 98, name: "Hitman Steelbook Edition", img: "HITMAN STEELBOOK EDITION=EP0082-CUSA06508_00.jpg", size: 48, cat: "action" },
+            { id: 99, name: "Horizon Zero Dawn", img: "horizon zero dawn=EP9000-CUSA07319_00.jpg", size: 46, cat: "action" },
+            { id: 100, name: "Hustle Kings VR", img: "Hustle Kings VR.jpg", size: 4, cat: "sport" },
+            { id: 101, name: "Injustice 2 Legendary Edition", img: "Injustice 2 Legendary Edition[CUSA10688].jpg", size: 36, cat: "action" },
+            { id: 102, name: "INSIDE", img: "INSIDE.jpg", size: 4, cat: "action" },
+            { id: 103, name: "It Takes Two", img: "It Takes Two[CUSA16746].jpg", size: 42, cat: "action" },
+            { id: 104, name: "J-Stars Victory VS Plus", img: "J-Stars.Victory.Vs.Plus.PS4-DUPLEX.jpg", size: 6, cat: "action" },
+            { id: 105, name: "JUMP FORCE", img: "JUMP FORCE [CUSA11638].jpg", size: 20, cat: "action" },
+            { id: 106, name: "Just Cause 3 (Arabic 🇮🇶)", img: "Just Cause 3 Arabic Edition.jpg", size: 42, cat: "arabic" },
+            { id: 107, name: "Just Cause 4 Gold Edition", img: "Just Cause 4 Gold Edition[CUSA09254].jpg", size: 48, cat: "action" },
+            { id: 108, name: "Kena Bridge of Spirits", img: "Kena Bridge of Spirits[CUSA24853].jpg", size: 19, cat: "action" },
+            { id: 109, name: "Layers of Fear", img: "Layers of Fear.jpg", size: 5, cat: "horror" },
+            { id: 110, name: "LEGO Batman 3 Beyond Gotham", img: "LEGO Batman 3 Beyond Gotham.jpg", size: 9, cat: "action" },
+            { id: 111, name: "LEGO Worlds", img: "LEGO WORLD.jpg", size: 5, cat: "action" },
+            { id: 112, name: "LIMBO", img: "LIMBO.jpg", size: 2, cat: "action" },
+            { id: 113, name: "Little Nightmares", img: "Little Nightmares (CUSA05952).jpg", size: 6, cat: "horror" },
+            { id: 114, name: "Lords of the Fallen", img: "Lords of the Fallen DUPLEX.jpg", size: 14, cat: "action" },
+            { id: 115, name: "Mad Max", img: "Mad Max.jpg", size: 34, cat: "action" },
+            { id: 116, name: "Mafia Definitive Edition (Arabic 🇮🇶)", img: "Mafia Definitive Edition[CUSA18100][ARBIC Fix 5.05-6.72-7.02].jpg", size: 39, cat: "arabic" },
+            { id: 117, name: "Mafia II Definitive Edition", img: "Mafia II Definitive Edition[CUSA16990].jpg", size: 36, cat: "action" },
+            { id: 118, name: "Mafia III", img: "Mafia III.jpg", size: 48, cat: "action" },
+            { id: 119, name: "Mass Effect Andromeda", img: "Mass Effect  Andromeda Game.jpg", size: 46, cat: "action" },
+            { id: 120, name: "Metal Gear Solid V Definitive", img: "Metal Gear Solid V The-Definitive Experience-=EP0101-CUSA05597_00.jpg", size: 31, cat: "action" },
+            { id: 121, name: "Metro Exodus", img: "Metro Exodus[USA11407][Update v1.08][FIX 6.72].jpg", size: 54, cat: "action" },
+            { id: 122, name: "Metro Redux", img: "Metro.Redux.PS4-BlaZe.jpg", size: 16, cat: "action" },
+            { id: 123, name: "Minecraft Dungeons", img: "Minecraft Dungeons[CUSA18779][FIX 5.05].jpg", size: 5, cat: "action" },
+            { id: 124, name: "Minecraft PlayStation 4 Edition", img: "Minecraft PlayStation 4 Edition.jpg", size: 4, cat: "action" },
+            { id: 125, name: "Monster Hunter World", img: "MONSTER HUNTER WORLD=EP0102-CUSA07708_00.jpg", size: 22, cat: "action" },
+            { id: 126, name: "Moons of Madness", img: "Moons of Madness.jpg", size: 12, cat: "horror" },
+            { id: 127, name: "Mortal Kombat Arcade Kollection", img: "Mortal Combat Arcade Kollection.jpg", size: 2, cat: "action" },
+            { id: 128, name: "Mortal Kombat 11", img: "Mortal Kombat 11[Update.v1.11][CUSA11379].jpg", size: 58, cat: "action" },
+            { id: 129, name: "Mortal Kombat Shaolin Monks", img: "mortal kombat shaolin monks.jpg", size: 5, cat: "action" },
+            { id: 130, name: "Mortal Kombat XL", img: "mortal kombat xL.jpg", size: 42, cat: "action" },
+            { id: 131, name: "MotoGP 17", img: "MotoGP 17 PS4.jpg", size: 14, cat: "sport" },
+            { id: 132, name: "MotoGP 21", img: "MotoGP 21[CUSA25612].jpg", size: 22, cat: "sport" },
+            { id: 133, name: "Motorcycle Club", img: "Motorcycle Club.jpg", size: 5, cat: "sport" },
+            { id: 134, name: "Naruto Storm 4 Road to Boruto (Arabic 🇮🇶)", img: "NARUTO SHIPPUDEN Ultimate Ninja STORM 4 ROAD TO BORUTO Arabic.jpg", size: 38, cat: "arabic" },
+            { id: 135, name: "Naruto to Boruto Shinobi Striker", img: "NARUTO TO BORUTO SHINOBI STRIKER[CUSA08767].jpg", size: 18, cat: "action" },
+            { id: 136, name: "NBA 2K20", img: "NBA 2K20[CUSA16386].jpg", size: 64, cat: "sport" },
+            { id: 137, name: "Need For Speed Heat", img: "Need For Speed Heat.jpg", size: 34, cat: "sport" },
+            { id: 138, name: "Need for Speed Hot Pursuit Remastered", img: "Need for Speed Hot Pursuit Remastered[CUSA23265].jpg", size: 27, cat: "sport" },
+            { id: 139, name: "Need for Speed Payback", img: "Need for Speed Payback.jpg", size: 28, cat: "sport" },
+            { id: 140, name: "Need for Speed Rivals", img: "need for speed RIVALS.jpg", size: 17, cat: "sport" },
+            { id: 141, name: "Nier Automata", img: "Nier.Automata.PS4-DUPLEX.jpg", size: 42, cat: "action" },
+            { id: 142, name: "One Piece Pirate Warriors 3", img: "One Piece Pirate Warriors 3.jpg", size: 13, cat: "action" },
+            { id: 143, name: "One Piece Pirate Warriors 4", img: "One Piece Pirate Warriors 4[CUSA17226].jpg", size: 24, cat: "action" },
+            { id: 144, name: "One Piece Burning Blood", img: "One.Piece.Burning.Blood.PS4-DUPLEX.jpg", size: 12, cat: "action" },
+            { id: 145, name: "Outlast 2", img: "Outlast 2.jpg", size: 21, cat: "horror" },
+            { id: 146, name: "Overcooked 2", img: "Overcooked 2[CUSA10940].jpg", size: 6, cat: "action" },
+            { id: 147, name: "Ben 10", img: "pen 10.jpg", size: 4, cat: "action" },
+            { id: 148, name: "Persona 5", img: "Persona.5.PS4-DUPLEX.jpg", size: 22, cat: "action" },
+            { id: 149, name: "PES 2018 Arabic (By Nabeel)", img: "PES 2018 ARBICK BY NABEEL-RealTeamPATCH-Adoorkhan-1.05=UP0101-CUSA08282_00.jpg", size: 32, cat: "arabic" },
+            { id: 150, name: "PES 2019 Monster Patch", img: "PES 2019 PS4 HEN Monster Patch Summer Season 1819 AIO.jpg", size: 36, cat: "sport" },
+            { id: 151, name: "Call of Duty Black Ops 1", img: "plakops1.jpg", size: 15, cat: "action" },
+            { id: 152, name: "PES 2017 TheRedDevil Patch", img: "Pro Evolution Soccer 2017 TheRedDevil Patched Season 17-18.jpg", size: 28, cat: "sport" },
+            { id: 153, name: "Prototype Biohazard Bundle", img: "Protoype.Biohazard.Bundle.jpg", size: 18, cat: "action" },
+            { id: 154, name: "Ratchet & Clank", img: "rach and clank.jpg", size: 26, cat: "action" },
+            { id: 155, name: "RAGE 2", img: "RAGE2.jpg", size: 38, cat: "action" },
+            { id: 156, name: "Rayman Legends", img: "rayman legnd.jpg", size: 9, cat: "action" },
+            { id: 157, name: "Red Dead Redemption 1", img: "red dead 1.jpg", size: 12, cat: "action" },
+            { id: 158, name: "Red Dead Redemption 2 (Arabic 🇮🇶)", img: "Red Dead Redemption 2 [DUPLEX][CUSA08519][Update.v1.29][ARABIC].jpg", size: 98, cat: "arabic" },
+            { id: 159, name: "Resident Evil 2 Remake", img: "Resident Evil 2 6.72.jpg", size: 25, cat: "horror" },
+            { id: 160, name: "Resident Evil 4 PS4", img: "Resident Evil 4 PS4.jpg", size: 11, cat: "horror" },
+            { id: 161, name: "Resident Evil 5 PS4", img: "RESIDENT EVIL 5 PS4.jpg", size: 18, cat: "horror" },
+            { id: 162, name: "Resident Evil 6", img: "Resident Evil 6.jpg", size: 18, cat: "horror" },
+            { id: 163, name: "Resident Evil 7 Biohazard (Arabic 🇮🇶)", img: "RESIDENT EVIL 7 biohazard Arabic.jpg", size: 26, cat: "arabic" },
+            { id: 164, name: "Resident Evil Origins Collection", img: "Resident Evil Origins Collection PS4.jpg", size: 22, cat: "horror" },
+            { id: 165, name: "Resident Evil Revelations", img: "RESIDENT EVIL REVELATIONS PS4.jpg", size: 11, cat: "horror" },
+            { id: 166, name: "Resident Evil Village", img: "Resident Evil Village[CUSA18008].jpg", size: 32, cat: "horror" },
+            { id: 167, name: "Resident Evil Revelations 2", img: "Resident_Evil_Revelations_2_PS4-Playable.jpg", size: 15, cat: "horror" },
+            { id: 168, name: "Rise of the Tomb Raider (Arabic 🇮🇶)", img: "Rise of the Tomb Raider Arabic.jpg", size: 24, cat: "arabic" },
+            { id: 169, name: "Risen 3 Titan Lords", img: "risen.jpg", size: 10, cat: "action" },
+            { id: 170, name: "Road Redemption", img: "Road Redemption[CUSA13020].jpg", size: 6, cat: "sport" },
+            { id: 171, name: "Rocket League", img: "rocket league=EP2002-CUSA01433_00-V0117.jpg", size: 16, cat: "sport" },
+            { id: 172, name: "Salt and Sanctuary", img: "Salt and Sanctuary.jpg", size: 2, cat: "action" },
+            { id: 173, name: "Sekiro Shadows Die Twice", img: "Sekiro Shadows Die Twice[CUSA13801] 6.72.jpg", size: 16, cat: "action" },
+            { id: 174, name: "Shadow of the Beast", img: "Shadow of the Beast.jpg", size: 8, cat: "action" },
+            { id: 175, name: "Shadow of the Tomb Raider (Arabic 🇮🇶)", img: "Shadow of the Tomb Raider ARABIC[CUSA12089].jpg", size: 34, cat: "arabic" },
+            { id: 176, name: "Shadow of the Colossus", img: "SHADOW-OF-THE-COLOSSUS-5.05-www.P30Day.com-EP9000-CUSA08809_00-SOTC0000000000EU-A0100-V0100.jpg", size: 15, cat: "action" },
+            { id: 177, name: "Shantae Half Genie Hero", img: "Shantae Half Genie Hero.jpg", size: 4, cat: "action" },
+            { id: 178, name: "Shenmue I & II", img: "SHENMUE[CUSA08355].jpg", size: 14, cat: "action" },
+            { id: 179, name: "Sherlock Holmes The Devil's Daughter", img: "Sherlock.Holmes.The.Devils.Daughter.PS4-DUPLEX.jpg", size: 16, cat: "action" },
+            { id: 180, name: "Cyberpunk 2077", img: "siperpank.jpg", size: 72, cat: "action" },
+            { id: 181, name: "Sleeping Dogs Definitive Edition", img: "Sleeping DogsT Definitive Edition.jpg", size: 21, cat: "action" },
+            { id: 182, name: "Sniper Ghost Warrior 3", img: "Sniper  Ghost Warrior 3=EP4321-CUSA04854_00.jpg", size: 42, cat: "action" },
+            { id: 183, name: "Sniper Elite 3", img: "Sniper Elite 3.jpg", size: 20, cat: "action" },
+            { id: 184, name: "Sniper Elite 4", img: "Sniper.Elite.4.PS4-DUPLEX.jpg", size: 36, cat: "action" },
+            { id: 185, name: "SnowRunner", img: "snow runner.jpg", size: 24, cat: "sport" },
+            { id: 186, name: "Sonic Colors Ultimate", img: "SONIC COLORS[CUSA19351].jpg", size: 9, cat: "action" },
+            { id: 187, name: "Sonic Frontiers", img: "Sonic Frontiers[CUSA28194].jpg", size: 25, cat: "action" },
+            { id: 188, name: "Sonic Origins Plus", img: "Sonic Origins Plus[CUSA30448][Premium Fun Pack DLC].jpg", size: 8, cat: "action" },
+            { id: 189, name: "Soulcalibur VI", img: "SOUL CALIBUR VI[DUPLEX].jpg", size: 16, cat: "action" },
+            { id: 190, name: "Marvel's Spider-Man (Arabic 🇮🇶)", img: "Spider-Man Arabic.jpg", size: 48, cat: "arabic" },
+            { id: 191, name: "Spider-Man Miles Morales (Arabic 🇮🇶)", img: "Spider-Man Miles MoralesS[CUSA20177][ARABIC].jpg", size: 42, cat: "arabic" },
+            { id: 192, name: "SpongeBob Battle for Bikini Bottom", img: "Spongebob Squarepants Battle for Bikini Bottom Rehydrated[CUSA14909].jpg", size: 15, cat: "action" },
+            { id: 193, name: "Spyro Reignited Trilogy", img: "Spyro Reignited Trilogy[CUSA12085].jpg", size: 36, cat: "action" },
+            { id: 194, name: "Star Wars Jedi Fallen Order", img: "Star Wars Jedi Fallen Order[CUSA12529].jpg", size: 46, cat: "action" },
+            { id: 195, name: "Stray", img: "Stray[CUSA24899].jpg", size: 9, cat: "action" },
+            { id: 196, name: "Styx Shards of Darkness", img: "STYX SHARDS OF DARKNES.jpg", size: 11, cat: "action" },
+            { id: 197, name: "Tekken 7", img: "TEKEEN 7.jpg", size: 44, cat: "action" },
+            { id: 198, name: "The Crew 2", img: "the crew 2.jpg", size: 36, cat: "sport" },
+            { id: 199, name: "The Evil Within 2", img: "The Evil Within 2.jpg", size: 32, cat: "horror" },
+            { id: 200, name: "The Last Guardian", img: "The Last Guardian.jpg", size: 14, cat: "action" },
+            { id: 201, name: "The Last of Us Part II", img: "The Last of Us Part 2 [CUSA10249].jpg", size: 82, cat: "action" },
+            { id: 202, name: "The Last of Us Remastered", img: "The Last of Us Remastered [CUSA00556].jpg", size: 46, cat: "action" },
+            { id: 203, name: "The Surge 2", img: "The Surge 2[CUSA12567].jpg", size: 15, cat: "action" },
+            { id: 204, name: "The Witcher 3 Wild Hunt GOTY", img: "The Witcher 3 Wild Hunt - Game of the Year Edition.jpg", size: 48, cat: "action" },
+            { id: 205, name: "The Amazing Spider-Man 2", img: "The.Amazing.Spiderman.2.PS4.jpg", size: 11, cat: "action" },
+            { id: 206, name: "The Walking Dead Complete First Season", img: "The.Walking.Dead.The.Complete.First.Season.jpg", size: 6, cat: "horror" },
+            { id: 207, name: "Theseus", img: "theseus.jpg", size: 4, cat: "action" },
+            { id: 208, name: "Tom Clancy's Ghost Recon Wildlands", img: "Tom Clancy's Ghost Recon Wildlands=EP0001-CUSA02820_00-GRWMENANORMAL000-A0100-V0100.jpg", size: 54, cat: "action" },
+            { id: 209, name: "Tomb Raider Definitive Edition", img: "Tomb Raider Definitive Edition.jpg", size: 18, cat: "action" },
+            { id: 210, name: "Trials Fusion", img: "Trials Fusion.jpg", size: 11, cat: "sport" },
+            { id: 211, name: "Truck Driver", img: "Truck Driver[CUSA12209].jpg", size: 6, cat: "sport" },
+            { id: 212, name: "Uncharted 4 A Thief's End (Arabic 🇮🇶)", img: "Uncharted 4 A Thiefs End[CUSA00918][Arabic].jpg", size: 52, cat: "arabic" },
+            { id: 213, name: "Uncharted The Lost Legacy", img: "uncharted 5.jpg", size: 45, cat: "action" },
+            { id: 214, name: "Uncharted The Nathan Drake Collection", img: "Uncharted The Nathan Drake Collection.jpg", size: 44, cat: "action" },
+            { id: 215, name: "Unravel Two", img: "Unravel Two.jpg", size: 4, cat: "action" },
+            { id: 216, name: "Unravel", img: "Unravel.jpg", size: 4, cat: "action" },
+            { id: 217, name: "Until Dawn", img: "Until.Dawn.PS4-BlaZe.jpg", size: 42, cat: "horror" },
+            { id: 218, name: "Vampyr", img: "Vampyr.jpg", size: 16, cat: "horror" },
+            { id: 219, name: "Watch Dogs 2 (Arabic 🇮🇶)", img: "WATCH DOGS 2 Arabic PS4.jpg", size: 34, cat: "arabic" },
+            { id: 220, name: "Watch Dogs Legion", img: "Watch Dogs Legion[CUSA13115].jpg", size: 44, cat: "action" },
+            { id: 221, name: "World War Z", img: "World War Z[CUSA13930].jpg", size: 22, cat: "horror" },
+            { id: 222, name: "Yakuza 6 The Song of Life", img: "Yakuza 6 The Song of Life PS4.jpg", size: 36, cat: "action" },
+            { id: 223, name: "Yakuza Kiwami", img: "YAKUZA KIWAMI PS4.jpg", size: 21, cat: "action" },
+            { id: 224, name: "Yooka-Laylee and the Impossible Lair", img: "Yooka Laylee and the Impossible Lair.jpg", size: 6, cat: "action" },
+            { id: 225, name: "Yooka-Laylee", img: "yooka laylee.jpg", size: 7, cat: "action" },
+            { id: 226, name: "Zombie Army Trilogy", img: "Zombie Army Trilogy.jpg", size: 12, cat: "horror" }
+        ];
+
+        let selectedIds = [];
+        let currentCat = 'all';
+        let maxHdd = 400;
+
+        function createPSPoster(title) {
+            const safe = title.replace(/[<>&'"]/g, '');
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
+                <defs><linearGradient id="psg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#003791"/><stop offset="100%" stop-color="#020617"/></linearGradient></defs>
+                <rect width="320" height="200" fill="url(#psg)"/>
+                <text x="160" y="100" font-family="sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">${safe.slice(0, 26)}</text>
+            </svg>`;
+            return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+        }
+
+        function renderGames() {
+            const grid = document.getElementById('gamesGrid');
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            grid.innerHTML = '';
+            const filtered = gamesList.filter(g => {
+                return (g.name.toLowerCase().includes(query)) && (currentCat === 'all' || g.cat === currentCat);
+            });
+            filtered.forEach(game => {
+                const isSelected = selectedIds.includes(game.id);
+                const card = document.createElement('div');
+                card.className = `ps-game-card rounded-2xl overflow-hidden flex flex-col justify-between ${isSelected ? 'ring-2 ring-emerald-400 border-emerald-400' : ''}`;
+                card.innerHTML = `
+                    <div class="relative h-36 bg-slate-950 overflow-hidden">
+                        <img src="images/${game.img}" alt="${game.name}" loading="lazy" onerror="this.onerror=null;this.src='${createPSPoster(game.name)}';" class="w-full h-full object-cover">
+                        <span class="absolute top-2 right-2 bg-slate-950/85 text-amber-300 text-[11px] font-bold px-2 py-0.5 rounded-lg border border-amber-400/30">${game.size} GB</span>
+                        <span class="absolute bottom-2 left-2 bg-sky-600/95 text-white text-[11px] font-black px-2 py-0.5 rounded-lg">1,000 د.ع</span>
+                    </div>
+                    <div class="p-3 flex flex-col flex-grow justify-between gap-2.5">
+                        <h3 class="text-xs md:text-sm font-bold text-white line-clamp-2">${game.name}</h3>
+                        <button onclick="psClickSound(); toggleGame(${game.id})" class="w-full py-2 rounded-xl text-xs font-black transition cursor-pointer ${isSelected ? 'bg-emerald-600 text-white' : 'bg-sky-600 text-white'}">${isSelected ? 'تم الاختيار ✓' : 'اختيار اللعبة +'}</button>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function setCat(cat, btn) {
+            currentCat = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => b.className = "cat-btn bg-white/10 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer");
+            btn.className = "cat-btn bg-sky-600 text-white px-4 py-2 rounded-xl text-xs font-black cursor-pointer";
+            renderGames();
+        }
+
+        function setHdd(size, btn) {
+            maxHdd = size;
+            document.querySelectorAll('.hdd-btn').forEach(b => b.className = "hdd-btn bg-white/10 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer");
+            btn.className = "hdd-btn bg-sky-600 text-white px-3.5 py-1.5 rounded-xl text-xs font-black shadow cursor-pointer";
+            updateHddAndCart();
+        }
+
+        function toggleGame(id) {
+            const idx = selectedIds.indexOf(id);
+            if (idx > -1) selectedIds.splice(idx, 1); else selectedIds.push(id);
+            updateHddAndCart();
+            renderGames();
+        }
+
+        function clearAllGames() { selectedIds = []; updateHddAndCart(); renderGames(); }
+
+        function updateHddAndCart() {
+            const chosen = gamesList.filter(g => selectedIds.includes(g.id));
+            const count = chosen.length;
+            const usedGB = chosen.reduce((sum, g) => sum + g.size, 0);
+            const totalIQD = count * 1000;
+            const remGB = maxHdd - usedGB;
+
+            document.getElementById('statCount').textContent = `${count} لعبة`;
+            document.getElementById('statUsed').textContent = `${usedGB} GB`;
+            document.getElementById('statRem').textContent = remGB >= 0 ? `${remGB} GB` : `فائض ${Math.abs(remGB)} GB`;
+            document.getElementById('statPrice').textContent = `${totalIQD.toLocaleString()} د.ع`;
+
+            const promoNotice = document.getElementById('promoNotice');
+            const barPromo = document.getElementById('barPromoStatus');
+
+            if (count >= 5) {
+                promoNotice.innerHTML = `🎉 ممتاز! طلبك وصل ${count} ألعاب (ستحصل على كود هدية مجاني)`;
+                promoNotice.className = "text-emerald-400 font-bold";
+                barPromo.textContent = `🎁 مؤهل للحصول على كود هدية!`;
+                barPromo.className = "text-[11px] text-emerald-400 font-bold";
+            } else {
+                const need = 5 - count;
+                promoNotice.innerHTML = `✨ أضف ${need} ألعاب أخرى لتحصل على كود هدية مجاني!`;
+                promoNotice.className = "text-amber-300 font-bold";
+                barPromo.textContent = `أضف ${need} ألعاب إضافية لكود الهدية`;
+                barPromo.className = "text-[11px] text-amber-300 font-bold";
+            }
+
+            const cartBar = document.getElementById('cartBar');
+            document.getElementById('barCount').textContent = count;
+            document.getElementById('barPrice').textContent = totalIQD.toLocaleString();
+            document.getElementById('barSize').textContent = `${usedGB} GB`;
+
+            const onGamesTab = !document.getElementById('sec-games').classList.contains('hidden');
+            if (count > 0 && onGamesTab) cartBar.classList.remove('translate-y-full');
+            else cartBar.classList.add('translate-y-full');
+        }
+
+        renderGames();
+        updateHddAndCart();
+    </script>
+</body>
+</html>
