@@ -43,7 +43,7 @@
         }
 
         .ps-glass {
-            background: rgba(10, 20, 42, 0.78);
+            background: rgba(10, 20, 42, 0.85);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
             border: 1px solid rgba(96, 165, 250, 0.22);
@@ -94,6 +94,37 @@
 
     <div class="ps-waves"></div>
 
+    <!-- ========================================== -->
+    <!-- GATEWAY MODAL: دخول الزبون أو المدير أولاً  -->
+    <!-- ========================================== -->
+    <div id="entryGatewayModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+        <div class="ps-glass max-w-md w-full p-8 rounded-3xl text-center border-2 border-sky-400/40 shadow-2xl relative">
+            <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-900 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-sky-400/50 shadow-xl shadow-blue-500/30">
+                <i class="fa-brands fa-playstation text-4xl text-white"></i>
+            </div>
+            <h1 class="text-xl md:text-2xl font-black text-white mb-1">مركز النجوم للإلكترونيات</h1>
+            <p class="text-xs text-slate-300 mb-6">النجف الأشرف - حي السلام (أربع شوارع)</p>
+
+            <div class="space-y-3">
+                <button onclick="psSuccessSound(); enterAsCustomer()" class="w-full bg-gradient-to-r from-blue-600 to-sky-600 hover:opacity-95 text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 shadow-lg transition cursor-pointer">
+                    <i class="fa-solid fa-gamepad text-lg"></i> دخول كزَبون (تصفح الألعاب والصيانة)
+                </button>
+
+                <button onclick="psClickSound(); showAdminLoginForm()" class="w-full bg-slate-900 hover:bg-slate-800 border border-rose-500/40 text-rose-300 py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition cursor-pointer">
+                    <i class="fa-solid fa-user-shield text-lg text-rose-400"></i> دخول كمدير (لوحة التحكم السرية) ⚙️
+                </button>
+            </div>
+
+            <!-- نموذج تسجيل دخول المدير المخفي داخل البوابة -->
+            <div id="gatewayAdminBox" class="hidden mt-5 pt-5 border-t border-white/10 space-y-3">
+                <p class="text-xs text-rose-300 font-bold">أدخل اسم المستخدم وكلمة المرور الخاصة بالمدير:</p>
+                <input type="text" id="gatewayAdminUser" placeholder="اسم المستخدم (افتراضي: admin)..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white text-center focus:outline-none focus:border-rose-400">
+                <input type="password" id="gatewayAdminPass" placeholder="كلمة المرور (افتراضي: Star2026)..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white text-center focus:outline-none focus:border-rose-400">
+                <button onclick="psSuccessSound(); verifyGatewayAdmin()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-2.5 rounded-xl text-xs cursor-pointer shadow-lg">تأكيد ودخول المدير 🔓</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="sticky top-0 z-40 bg-slate-950/75 backdrop-blur-xl border-b border-blue-400/20">
         <div class="container mx-auto px-4 py-3 flex flex-col lg:flex-row justify-between items-center gap-3">
@@ -105,23 +136,33 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="text-lg md:text-xl font-black text-white tracking-wide">مركز النجوم للإلكترونيات</h1>
-                        <span class="text-[10px] bg-sky-500/20 text-sky-300 border border-sky-400/30 px-2 py-0.5 rounded-full font-bold">PS4 • PS5</span>
+                        <span id="roleBadge" class="text-[10px] bg-sky-500/20 text-sky-300 border border-sky-400/30 px-2 py-0.5 rounded-full font-bold">وضع الزبون</span>
                     </div>
                     <p class="text-[11px] text-slate-300">النجف الأشرف - حي السلام (أربع شوارع، مقابيل مسبح أمواج) | 07840022295</p>
                 </div>
             </div>
 
             <nav class="flex items-center gap-2 flex-wrap justify-center">
-                <button onclick="psNavSound(); switchSection('games', this)" class="ps-nav-item active px-4 py-2 rounded-2xl text-xs md:text-sm font-bold text-white flex items-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-gamepad text-sky-400"></i> مكتبة الألعاب (226)
+                <button onclick="psNavSound(); switchSection('games', this)" class="ps-nav-item active px-3 py-2 rounded-2xl text-xs md:text-sm font-bold text-white flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-gamepad text-sky-400"></i> الألعاب (226)
                 </button>
-                <button onclick="psNavSound(); switchSection('mystery', this)" class="ps-nav-item px-4 py-2 rounded-2xl text-xs md:text-sm font-bold text-amber-300 flex items-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-lock text-amber-400" id="boxNavIcon"></i> صندوق المكافآت المؤمّن
+                <button onclick="psNavSound(); switchSection('repair', this)" class="ps-nav-item px-3 py-2 rounded-2xl text-xs md:text-sm font-bold text-slate-200 flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-screwdriver-wrench text-emerald-400"></i> الصيانة
                 </button>
-                <button onclick="psNavSound(); switchSection('repair', this)" class="ps-nav-item px-4 py-2 rounded-2xl text-xs md:text-sm font-bold text-slate-200 flex items-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-stethoscope text-emerald-400"></i> ورشة الصيانة والتشخيص
+                <button onclick="psNavSound(); switchSection('passport', this)" class="ps-nav-item px-3 py-2 rounded-2xl text-xs md:text-sm font-bold text-amber-300 flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-fingerprint text-amber-400"></i> بصمة الجهاز 🛡️
                 </button>
-                <a href="https://wa.me/9647840022295" target="_blank" onclick="psClickSound()" class="bg-emerald-600/90 hover:bg-emerald-500 text-white px-4 py-2 rounded-2xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-lg transition">
+                <button onclick="psNavSound(); switchSection('garage', this)" class="ps-nav-item px-3 py-2 rounded-2xl text-xs md:text-sm font-bold text-sky-300 flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-id-card text-sky-400"></i> أرشيفك
+                </button>
+                <button onclick="psNavSound(); switchSection('mystery', this)" class="ps-nav-item px-3 py-2 rounded-2xl text-xs md:text-sm font-bold text-amber-300 flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-lock text-amber-400" id="boxNavIcon"></i> المكافآت
+                </button>
+                <!-- زر لوحة المدير (يظهر فقط إذا كان مسجل دخول كمدير) -->
+                <button id="adminNavBtn" onclick="psNavSound(); switchSection('admin', this)" class="hidden ps-nav-item px-3 py-2 rounded-2xl text-xs md:text-sm font-bold text-rose-300 flex items-center gap-1.5 cursor-pointer border border-rose-500/30">
+                    <i class="fa-solid fa-user-shield text-rose-400"></i> إدارة المحل ⚙️
+                </button>
+                <a href="https://wa.me/9647840022295" target="_blank" onclick="psClickSound()" class="bg-emerald-600/90 hover:bg-emerald-500 text-white px-3 py-2 rounded-2xl text-xs md:text-sm font-bold flex items-center gap-1.5 shadow-lg transition">
                     <i class="fa-brands fa-whatsapp text-base"></i> واتساب
                 </a>
             </nav>
@@ -140,18 +181,60 @@
     <div class="bg-blue-950/60 border-b border-sky-500/20 py-1.5 overflow-hidden text-xs">
         <div class="whitespace-nowrap animate-marquee gap-12 text-sky-200 font-bold">
             <span>△ ○ ✕ □ أهلاً بكم في مركز النجوم للإلكترونيات — النجف الأشرف</span>
-            <span>🎁 اطلب 5 ألعاب أو أكثر واحصل على كود هدية مجاني لصندوق المكافآت!</span>
-            <span>🔥 سعر تحميل جميع الألعاب 1,000 دينار عراقي فقط لكل لعبة!</span>
+            <span>🎫 نظام تذاكر الأجهزة والعلامات الفارقة لمنع أي خلط بين الأجهزة بالمحل!</span>
+            <span>⚙️ لوحة تحكم المدير لإدارة الأجهزة وتغيير اسم المستخدم وكلمة المرور متى شئت!</span>
         </div>
     </div>
 
     <!-- Main Container -->
     <main class="container mx-auto px-4 py-6 flex-grow">
 
-        <!-- ========================================== -->
-        <!-- SECTION 1: GAMES LIBRARY                   -->
-        <!-- ========================================== -->
+        <!-- SECTION 1: GAMES -->
         <section id="sec-games" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="ps-glass rounded-3xl p-5 border border-sky-400/40">
+                    <div class="flex items-center gap-2.5 mb-3">
+                        <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs md:text-sm font-black text-white">باقات الألعاب الجاهزة (اختيار 5+ بضغطة زر)</h3>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="psSuccessSound(); selectGameBundle('action')" class="bg-slate-900/90 hover:bg-slate-900 border border-sky-500/30 p-2.5 rounded-2xl text-center transition cursor-pointer">
+                            <span class="block text-[11px] font-bold text-white mb-0.5">أساطير الأكشن</span>
+                            <span class="text-[9px] text-sky-400">5 ألعاب ⚡</span>
+                        </button>
+                        <button onclick="psSuccessSound(); selectGameBundle('arabic')" class="bg-slate-900/90 hover:bg-slate-900 border border-sky-500/30 p-2.5 rounded-2xl text-center transition cursor-pointer">
+                            <span class="block text-[11px] font-bold text-white mb-0.5">الألعاب المعرّبة</span>
+                            <span class="text-[9px] text-emerald-400">5 ألعاب 🇮🇶</span>
+                        </button>
+                        <button onclick="psSuccessSound(); selectGameBundle('sport')" class="bg-slate-900/90 hover:bg-slate-900 border border-sky-500/30 p-2.5 rounded-2xl text-center transition cursor-pointer">
+                            <span class="block text-[11px] font-bold text-white mb-0.5">الكرة والسرعة</span>
+                            <span class="text-[9px] text-amber-400">5 ألعاب ⚽</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ps-glass rounded-3xl p-5 border border-emerald-400/40">
+                    <div class="flex items-center gap-2.5 mb-3">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs md:text-sm font-black text-white">مستشار الستوريج الذكي (ملء الهارد بالملليمترا)</h3>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="psSuccessSound(); optimizeStorageFit()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:opacity-95 text-white py-2.5 rounded-2xl text-xs font-black shadow transition cursor-pointer">
+                            ✨ املأ مساحة هاردك الحالية بأفضل الألعاب تلقائياً بدون هدر!
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HDD Calculator & Stats -->
             <div class="ps-glass rounded-3xl p-5">
                 <div class="flex flex-col lg:flex-row justify-between items-center gap-4 mb-4">
                     <div class="flex items-center gap-3">
@@ -159,8 +242,8 @@
                             <i class="fa-solid fa-hard-drive"></i>
                         </div>
                         <div>
-                            <h2 class="text-base md:text-lg font-black text-white">مكتبة الألعاب وحاسبة مساحة الهارد المدمجة</h2>
-                            <p class="text-xs text-slate-300">اختر 5 ألعاب أو أكثر لتحصل على كود هدية خاص في طلبك!</p>
+                            <h2 class="text-base md:text-lg font-black text-white">حاسبة مساحة الهارد المدمجة</h2>
+                            <p class="text-xs text-slate-300">اختر 5 ألعاب أو أكثر لتحصل على كود هدية مجاني ونظام السفير!</p>
                         </div>
                     </div>
 
@@ -221,16 +304,213 @@
             <div id="gamesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
         </section>
 
-        <!-- ========================================== -->
-        <!-- SECTION 2: SECURE MYSTERY BOX              -->
-        <!-- ========================================== -->
+        <!-- SECTION 2: REPAIR -->
+        <section id="sec-repair" class="hidden space-y-6">
+            <div class="ps-glass rounded-3xl p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 text-2xl">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-black text-white">حاسبة الصيانة المتقدمة وخدمة التوصيل بالنجف</h2>
+                        <p class="text-xs text-slate-300">حدد جهازك واكتب العلامة الفارقة لضمان عدم اختلاط الأجهزة بالمحل</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4 bg-slate-950/75 p-5 rounded-3xl border border-white/10">
+                        <div>
+                            <label class="block text-xs font-bold text-sky-300 mb-2">1. اختر نوع الجهاز:</label>
+                            <select id="advDevice" onchange="psClickSound(); calculateAdvancedRepair()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-sky-400">
+                                <option value="PlayStation 4 (Fat / Slim / Pro)">PlayStation 4 (Fat / Slim / Pro)</option>
+                                <option value="PlayStation 5">PlayStation 5</option>
+                                <option value="PlayStation 3">PlayStation 3</option>
+                                <option value="Xbox (Series S / One / 360)">Xbox (Series S / One / 360)</option>
+                                <option value="قبضة تحكم (DualShock 4 / DualSense)">قبضة تحكم (DualShock 4 / DualSense)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-amber-400 mb-1">2. العلامة الفارقة لجهازك (مهم لمنع الخلط بالمحل):</label>
+                            <input type="text" id="repairDeviceMark" placeholder="مثال: لزقة برشلونة فوق، خدش صغير يسار..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-sky-300 mb-2">3. حدد الخدمات المطلوبة:</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="repairServicesList">
+                                <label class="flex items-start gap-3 bg-slate-900/90 border border-slate-800 hover:border-sky-500/50 p-3.5 rounded-2xl cursor-pointer transition">
+                                    <input type="checkbox" value="تنظيف شامل + معجون حراري أصلي" data-min="15000" data-max="25000" onchange="psClickSound(); calculateAdvancedRepair()" class="mt-1 accent-sky-500 w-4 h-4">
+                                    <div>
+                                        <span class="block text-xs font-bold text-white">تنظيف ومعجون حراري</span>
+                                        <span class="text-[11px] text-amber-400 font-bold">15,000 - 25,000 د.ع</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-3 bg-slate-900/90 border border-slate-800 hover:border-sky-500/50 p-3.5 rounded-2xl cursor-pointer transition">
+                                    <input type="checkbox" value="تبديل منفذ أو آيسي HDMI" data-min="30000" data-max="50000" onchange="psClickSound(); calculateAdvancedRepair()" class="mt-1 accent-sky-500 w-4 h-4">
+                                    <div>
+                                        <span class="block text-xs font-bold text-white">إصلاح منفذ أو آيسي HDMI</span>
+                                        <span class="text-[11px] text-amber-400 font-bold">30,000 - 50,000 د.ع</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-3 bg-slate-900/90 border border-slate-800 hover:border-sky-500/50 p-3.5 rounded-2xl cursor-pointer transition">
+                                    <input type="checkbox" value="إصلاح دائرة الباور سبلاي" data-min="25000" data-max="45000" onchange="psClickSound(); calculateAdvancedRepair()" class="mt-1 accent-sky-500 w-4 h-4">
+                                    <div>
+                                        <span class="block text-xs font-bold text-white">صيانة الباور سبلاي</span>
+                                        <span class="text-[11px] text-amber-400 font-bold">25,000 - 45,000 د.ع</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-3 bg-slate-900/90 border border-slate-800 hover:border-sky-500/50 p-3.5 rounded-2xl cursor-pointer transition">
+                                    <input type="checkbox" value="تصليح أنالوج القبضة أو الأزرار" data-min="10000" data-max="15000" onchange="psClickSound(); calculateAdvancedRepair()" class="mt-1 accent-sky-500 w-4 h-4">
+                                    <div>
+                                        <span class="block text-xs font-bold text-white">صيانة قبضة تحكم</span>
+                                        <span class="text-[11px] text-amber-400 font-bold">10,000 - 15,000 د.ع</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-950/50 border border-sky-400/30 rounded-2xl p-4">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" id="deliveryCheck" onchange="psClickSound(); toggleDeliveryAddress()" class="accent-emerald-500 w-5 h-5">
+                                <div>
+                                    <span class="text-sm font-black text-white flex items-center gap-2">
+                                        <i class="fa-solid fa-motorcycle text-amber-400"></i> طلب خدمة استلام وتوصيل الجهاز من البيت (داخل النجف)
+                                    </span>
+                                </div>
+                            </label>
+                            <div id="deliveryAddressBox" class="hidden mt-3">
+                                <input type="text" id="customerAddress" placeholder="اكتب عنوانك في النجف (حي السلام، حي الأمير...)..."
+                                    class="w-full bg-slate-950 border border-sky-500/40 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-b from-blue-950/90 to-slate-950 border border-sky-500/40 rounded-3xl p-6 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-sky-400 block mb-1">ملخص التكلفة التقديرية</span>
+                            <h3 id="summaryDeviceTitle" class="text-base font-black text-white mb-4">PlayStation 4</h3>
+                            <div id="selectedServicesSummary" class="space-y-2 text-xs text-slate-300 border-y border-white/10 py-4 mb-4 min-h-[100px]">
+                                <span class="text-slate-500">لم يتم تحديد أي خدمة صيانة بعد...</span>
+                            </div>
+                            <div class="mb-6">
+                                <span class="text-xs text-slate-400 block">التكلفة التقديرية:</span>
+                                <span id="advTotalRange" class="text-2xl font-black text-amber-400">0 د.ع</span>
+                            </div>
+                        </div>
+                        <button onclick="psSuccessSound(); sendAdvancedRepairWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-lg transition cursor-pointer">
+                            <i class="fa-brands fa-whatsapp text-lg"></i> حجز الصيانة برقم التذكرة 🎫
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: PASSPORT -->
+        <section id="sec-passport" class="hidden space-y-6 max-w-3xl mx-auto">
+            <div class="ps-glass rounded-3xl p-6 md:p-8 border border-amber-400/40">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-2xl">
+                        <i class="fa-solid fa-fingerprint"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-black text-white">بصمة الكونسول الرقمية وسجل الصيانة (Console Passport)</h2>
+                        <p class="text-xs text-slate-300">سجل رقم السيريال لجهازك لتوثيق تاريخ صيانته ورفع قيمته وموثوقيته عند البيع</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950/80 p-5 rounded-3xl border border-white/10 space-y-4 mb-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-sky-300 mb-1">اسم المالك:</label>
+                            <input type="text" id="passName" placeholder="أبو جود..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-sky-300 mb-1">نوع الجهاز ورقم السيريال (Serial No):</label>
+                            <input type="text" id="passSerial" placeholder="PS5 / PS4 - S/N: 123456789" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                        </div>
+                    </div>
+                    <button onclick="psSuccessSound(); generateConsolePassport()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl text-sm transition cursor-pointer shadow-lg">
+                        إصدار بطاقة البصمة الرقمية لجهازي 🛡️
+                    </button>
+                </div>
+
+                <div id="passportResultArea" class="hidden bg-gradient-to-br from-slate-900 to-slate-950 border-2 border-amber-400/60 rounded-3xl p-6 text-right space-y-3">
+                    <div class="flex justify-between items-center border-b border-amber-400/30 pb-3">
+                        <span class="text-xs font-black text-amber-400">⭐ بطاقة موثوقية مركز النجوم للإلكترونيات</span>
+                        <span id="passDate" class="text-[11px] text-slate-400">التاريخ</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block">المالك:</span>
+                        <span id="resPassName" class="text-sm font-black text-white">---</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block">الجهاز والسيريال:</span>
+                        <span id="resPassSerial" class="text-sm font-black text-sky-300">---</span>
+                    </div>
+                    <div class="bg-emerald-500/10 border border-emerald-500/30 p-3 rounded-xl">
+                        <span class="text-[11px] text-emerald-300 font-bold block">✓ حالة الجهاز الهندسية: تم فحصه وصيانته بتركيب معجون أصلي وتنظيف شامل في مركز النجوم (النجف الأشرف).</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: GARAGE -->
+        <section id="sec-garage" class="hidden space-y-6">
+            <div class="ps-glass rounded-3xl p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-400 text-2xl">
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-black text-white">أرشيف الزبون وبطاقة الصيانة الوقائية (كل 6 أشهر)</h2>
+                        <p class="text-xs text-slate-300">سجل طلباتك السابقة وتذكرتك الدورية لحماية معالج جهازك</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-blue-900/80 via-slate-900 to-slate-950 border-2 border-sky-400/40 rounded-3xl p-6 mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                        <div class="space-y-2">
+                            <span class="inline-flex items-center gap-1.5 bg-sky-500/20 text-sky-300 text-[11px] font-bold px-3 py-1 rounded-full border border-sky-400/30">
+                                <i class="fa-solid fa-shield-halved"></i> بطاقة الوقاية الدورية - مركز النجوم
+                            </span>
+                            <h3 class="text-lg md:text-xl font-black text-white">حماية جهازك من الحرارة (كل 6 أشهر)</h3>
+                            <div class="flex flex-wrap gap-2 pt-2">
+                                <input type="text" id="garageUserName" placeholder="اسمك أو لقبك..." class="bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-sky-400">
+                                <input type="text" id="garageDeviceModel" placeholder="نوع جهازك (مثلاً: PS5)" class="bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-sky-400">
+                                <button onclick="psSuccessSound(); savePreventiveCard()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-xs cursor-pointer">
+                                    تفعيل بطاقة الوقاية 🎫
+                                </button>
+                            </div>
+                        </div>
+                        <div id="preventiveTicketDisplay" class="w-full md:w-80 bg-slate-950/90 border border-dashed border-amber-400/60 rounded-2xl p-4 text-center">
+                            <span class="text-[11px] text-slate-400 block">حالة البطاقة الوقائية</span>
+                            <span class="text-sm font-bold text-amber-300 block my-1">غير مفعلة حالياً</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950/75 border border-white/10 rounded-3xl p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm font-black text-white flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-emerald-400"></i> سجل طلباتك السابقة
+                        </h3>
+                        <button onclick="clearHistory()" class="text-[11px] text-rose-400 hover:underline cursor-pointer">مسح السجل</button>
+                    </div>
+                    <div id="customerHistoryContainer" class="space-y-3 text-xs">
+                        <p class="text-slate-500 text-center py-6">لا توجد طلبات مسجلة بعد...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: MYSTERY BOX -->
         <section id="sec-mystery" class="hidden max-w-2xl mx-auto">
             <div class="ps-glass rounded-3xl p-6 md:p-8 text-center border border-amber-400/30">
                 <div class="inline-flex items-center gap-2 bg-amber-500/20 text-amber-300 border border-amber-400/30 px-4 py-1 rounded-full text-xs font-bold mb-4">
-                    <i class="fa-solid fa-gift"></i> صندوق المكافآت المؤمّن (يتطلب طلب 5 ألعاب فأكثر)
+                    <i class="fa-solid fa-gift"></i> صندوق المكافآت ونظام السفير
                 </div>
                 <h2 class="text-2xl md:text-3xl font-black text-white mb-2">صندوق الحظ والمكافآت المحمي</h2>
-                <p class="text-xs md:text-sm text-slate-300 mb-6">أدخل كود الهدية الذي استلمته في رسالة طلبك (يُستخدم لمرة واحدة فقط).</p>
+                <p class="text-xs md:text-sm text-slate-300 mb-6">أدخل كود الهدية الخاص بك (يُستخدم لمرة واحدة). يمكنك إهداء الكود لصديقك عبر نظام السفير!</p>
 
                 <div class="my-6 flex flex-col items-center justify-center">
                     <div id="lockedBoxVisual" class="w-36 h-36 rounded-3xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 flex items-center justify-center shadow-2xl border-2 border-slate-700">
@@ -254,84 +534,64 @@
             </div>
         </section>
 
-        <!-- ========================================== -->
-        <!-- SECTION 3: REPAIR & DIAGNOSTICS            -->
-        <!-- ========================================== -->
-        <section id="sec-repair" class="hidden space-y-6">
-            <div class="ps-glass rounded-3xl p-6 md:p-8">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 text-2xl">
-                        <i class="fa-solid fa-stethoscope"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-black text-white">نظام التخمين الفوري لأعطال الأجهزة والقبضات</h2>
-                        <p class="text-xs text-slate-300">اختر جهازك والعطل وسيعطيك النظام التشخيص التقني، السبب، والتكلفة التقديرية فوراً</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 bg-slate-950/80 p-5 md:p-6 rounded-3xl border border-white/10 mb-6 shadow-inner">
-                    <div>
-                        <label class="block text-xs font-bold text-sky-300 mb-2">1. حدد نوع الجهاز:</label>
-                        <select id="diagDevice" onchange="psClickSound(); runDiagnostic()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-sky-400">
-                            <option value="ps4">PlayStation 4 (Fat / Slim / Pro)</option>
-                            <option value="ps5">PlayStation 5</option>
-                            <option value="ps3">PlayStation 3</option>
-                            <option value="xbox">Xbox (Series S / One / 360)</option>
-                            <option value="controller">قبضة تحكم (DualShock 4 / DualSense)</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-sky-300 mb-2">2. حدد المشكلة أو العطل:</label>
-                        <select id="diagIssue" onchange="psClickSound(); runDiagnostic()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-sky-400">
-                            <option value="heat">صوت مروحة عالي أو الجهاز يطفى من الحرارة</option>
-                            <option value="power">الجهاز لا يعمل نهائياً أو يشتغل ثواني ويطفى (Power Issue)</option>
-                            <option value="hdmi">الجهاز يشتغل لكن لا توجد صورة على الشاشة (HDMI Port)</option>
-                            <option value="hdd">تعليق، بطء، أو رسالة خطأ في النظام والهارد</option>
-                            <option value="stick">انحراف بالأنالوج (Drift) أو أزرار القبضة لا تستجيب</option>
-                        </select>
-                    </div>
-
-                    <div class="md:col-span-2 bg-gradient-to-br from-blue-950/80 to-slate-900 border border-sky-500/40 rounded-2xl p-5 flex flex-col gap-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-sky-500/20 pb-4">
-                            <div>
-                                <span class="text-[11px] text-sky-300 font-bold block mb-1">السبب التقني المتوقع:</span>
-                                <span id="estCause" class="text-xs font-bold text-white">ارتفاع حرارة المعالج بسبب جفاف المعجون الحراري وتراكم الأتربة.</span>
-                            </div>
-                            <div>
-                                <span class="text-[11px] text-amber-300 font-bold block mb-1">التكلفة التقديرية:</span>
-                                <span id="estPrice" class="text-sm font-black text-amber-400">15,000 إلى 25,000 د.ع</span>
-                            </div>
-                            <div>
-                                <span class="text-[11px] text-emerald-300 font-bold block mb-1">وقت الإصلاح الفوري:</span>
-                                <span id="estTime" class="text-xs font-bold text-white">من 45 إلى 60 دقيقة</span>
-                            </div>
+        <!-- SECTION 6: ADMIN CONTROL PANEL (لوحة المدير) -->
+        <section id="sec-admin" class="hidden space-y-6 max-w-4xl mx-auto">
+            <div class="ps-glass rounded-3xl p-6 md:p-8 border border-rose-500/40">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 border-b border-rose-500/30 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-400 text-2xl">
+                            <i class="fa-solid fa-user-shield"></i>
                         </div>
-
-                        <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
-                            <span class="text-xs text-slate-300" id="estDetails">التنظيف يشمل المشتت الحراري وتبديل المعجون بمعجون أصلي (MX-4 / MX-7).</span>
-                            <button onclick="psClickSound(); sendRepairWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl font-black text-xs whitespace-nowrap flex items-center gap-2 shadow-lg transition cursor-pointer">
-                                <i class="fa-brands fa-whatsapp text-base"></i> حجز الصيانة وإرسال التخمين
-                            </button>
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-black text-white">لوحة تحكم المدير الحصرية ⚙️</h2>
+                            <p class="text-xs text-slate-300">إدارة الأجهزة، تغيير اسم المستخدم وكلمة المرور، وإرسال إشعارات التكلفة للواتساب</p>
                         </div>
                     </div>
+                    <button onclick="psClickSound(); logoutAdmin()" class="bg-rose-600 hover:bg-rose-500 text-white px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition">
+                        تسجيل خروج المدير 🔒
+                    </button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-white/5 border border-white/10 p-5 rounded-2xl">
-                        <i class="fa-solid fa-microchip text-2xl text-sky-400 mb-2"></i>
-                        <h3 class="font-bold text-white text-sm mb-1">صيانة الهاردوير والبورد</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed">تبديل آيسي HDMI، إصلاح دائرة الباور، وإعادة تدفق المعالج (BGA Reballing).</p>
+                <!-- إعدادات اسم المستخدم وكلمة المرور للمدير -->
+                <div class="bg-slate-950/80 p-5 rounded-3xl border border-white/10 mb-6 space-y-4">
+                    <h3 class="text-sm font-black text-sky-300 flex items-center gap-2">
+                        <i class="fa-solid fa-key text-amber-400"></i> تغيير بيانات تسجيل دخول المدير (اسم المستخدم وكلمة المرور)
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">اسم المستخدم الجديد:</label>
+                            <input type="text" id="adminNewUsername" placeholder="اسم المستخدم الجديد..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-400">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">كلمة المرور الجديدة:</label>
+                            <input type="password" id="adminNewPassword" placeholder="كلمة المرور الجديدة..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-400">
+                        </div>
                     </div>
-                    <div class="bg-white/5 border border-white/10 p-5 rounded-2xl">
-                        <i class="fa-solid fa-gamepad text-2xl text-amber-400 mb-2"></i>
-                        <h3 class="font-bold text-white text-sm mb-1">تصليح القبضات الاحترافي</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed">تركيب أنالوج مغناطيسي ضد الانحراف، استبدال شريط الأزرار والمطاط.</p>
-                    </div>
-                    <div class="bg-white/5 border border-white/10 p-5 rounded-2xl">
-                        <i class="fa-solid fa-wand-magic-sparkles text-2xl text-emerald-400 mb-2"></i>
-                        <h3 class="font-bold text-white text-sm mb-1">البرمجيات والأنظمة</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed">تهكير وتحديث أنظمة GoldHEN، تنصيب الألعاب المعربة، وحل مشاكل السوفتوير.</p>
+                    <button onclick="psSuccessSound(); updateAdminCredentials()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-xs font-black cursor-pointer shadow-lg">
+                        حفظ البيانات الجديدة للمدير 💾
+                    </button>
+                </div>
+
+                <!-- جدول إدارة الأجهزة والطلبات -->
+                <div>
+                    <h3 class="text-sm font-black text-white mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-amber-400"></i> الأجهزة والطلبات الحالية في المحل
+                    </h3>
+                    <div class="bg-slate-950/90 border border-white/10 rounded-2xl overflow-x-auto">
+                        <table class="w-full text-right text-xs">
+                            <thead class="bg-slate-900 text-slate-400 border-b border-white/10">
+                                <tr>
+                                    <th class="p-3">رقم التذكرة</th>
+                                    <th class="p-3">نوع الخدمة والجهاز</th>
+                                    <th class="p-3">العلامة الفارقة</th>
+                                    <th class="p-3">الحالة والتكلفة النهائية</th>
+                                    <th class="p-3 text-center">إجراءات المدير (واتساب)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminOrdersTableBody">
+                                <!-- يتم تعبئتها ديناميكياً -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -350,30 +610,39 @@
                         <span class="text-slate-500 mx-1">|</span> 
                         المساحة: <span id="barSize" class="text-amber-400">0 GB</span>
                     </div>
-                    <p id="barPromoStatus" class="text-[11px] text-amber-300 font-bold">أضف 5 ألعاب لتحصل على كود هدية!</p>
+                    <p id="barPromoStatus" class="text-[11px] text-amber-300 font-bold">أضف 5 ألعاب لتحصل على كود الهدية!</p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 w-full sm:w-auto">
-                <input type="text" id="orderPrevCode" placeholder="كود سابق (إن وجد)" class="bg-slate-900 border border-slate-700 px-3 py-2 rounded-xl text-xs text-white focus:outline-none focus:border-sky-400 w-36">
-                <button onclick="psSuccessSound(); submitGamesWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-lg transition cursor-pointer flex-grow sm:flex-grow-0">
+            <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap justify-end">
+                <input type="text" id="orderDeviceMark" placeholder="العلامة الفارقة لجهازك (لزقة، لون...)" class="bg-slate-900 border border-amber-500/40 px-3 py-2 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400 w-44">
+                <label class="flex items-center gap-1.5 bg-slate-900 border border-slate-700 px-3 py-2 rounded-xl text-xs text-sky-300 cursor-pointer">
+                    <input type="checkbox" id="gamesDeliveryCheck" class="accent-emerald-500">
+                    <span>توصيل بالنجف 🛵</span>
+                </label>
+                <input type="text" id="orderPrevCode" placeholder="كود سابق" class="bg-slate-900 border border-slate-700 px-3 py-2 rounded-xl text-xs text-white focus:outline-none focus:border-sky-400 w-24">
+                <button onclick="psSuccessSound(); submitGamesWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-lg transition cursor-pointer">
                     <i class="fa-brands fa-whatsapp text-lg"></i> إرسال الألعاب
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Code Issued ONLY If 5+ Games -->
+    <!-- Modal: Code Issued & Ticket -->
     <div id="codeIssuedModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="ps-glass max-w-md w-full p-6 rounded-3xl text-center border border-emerald-400/40 relative">
             <button onclick="closeIssuedModal()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-xl cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
-            <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-3 text-3xl border border-emerald-400/30">
-                <i class="fa-solid fa-gift"></i>
+            <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-3 text-3xl border border-emerald-500/30">
+                <i class="fa-solid fa-ticket"></i>
             </div>
-            <h3 class="text-xl font-black text-white mb-2">مبروك! لقد طلبت 5 ألعاب فأكثر 🎁</h3>
-            <p class="text-xs text-slate-300 mb-4">تم توليد كود هدية فريد لطلبك (يُستخدم لمرة واحدة فقط):</p>
-            <div class="bg-slate-950 border-2 border-dashed border-amber-400 py-3 px-6 rounded-2xl mb-4">
-                <span id="issuedCodeDisplay" class="text-2xl font-black tracking-widest text-amber-400">NJ-101</span>
+            <h3 class="text-xl font-black text-white mb-2">تم تجهيز طلبك برقم تذكرة (#NJ)!</h3>
+            <p class="text-xs text-slate-300 mb-2">رقم التذكرة الخاص بجهازك (اكتبه على ملصق وضعه على الجهاز):</p>
+            <div class="bg-slate-950 border-2 border-dashed border-sky-400 py-2 px-4 rounded-xl mb-3">
+                <span id="issuedTicketDisplay" class="text-xl font-black tracking-widest text-sky-400">#NJ-501</span>
+            </div>
+            <p class="text-xs text-slate-300 mb-2">كود الهدية الخاص بك (نظام السفير):</p>
+            <div class="bg-slate-950 border-2 border-dashed border-amber-400 py-2 px-4 rounded-xl mb-4">
+                <span id="issuedCodeDisplay" class="text-xl font-black tracking-widest text-amber-400">NJ-101</span>
             </div>
             <button onclick="closeIssuedModal()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm w-full cursor-pointer">حسناً وإرسال للواتساب</button>
         </div>
@@ -453,8 +722,57 @@
             if (el) el.textContent = now.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' });
         }, 1000);
 
+        // ==========================================
+        // GATEWAY LOGIC (دخول الزبون أو المدير أولاً)
+        // ==========================================
+        function enterAsCustomer() {
+            document.getElementById('entryGatewayModal').classList.add('hidden');
+            document.getElementById('roleBadge').textContent = "وضع الزبون 🎮";
+            document.getElementById('adminNavBtn').classList.add('hidden');
+        }
+
+        function showAdminLoginForm() {
+            document.getElementById('gatewayAdminBox').classList.remove('hidden');
+        }
+
+        function verifyGatewayAdmin() {
+            const uInput = document.getElementById('gatewayAdminUser').value.trim();
+            const pInput = document.getElementById('gatewayAdminPass').value.trim();
+
+            const savedUser = localStorage.getItem('nj_admin_user') || 'admin';
+            const savedPass = localStorage.getItem('nj_admin_pass') || 'Star2026';
+
+            if (uInput === savedUser && pInput === savedPass) {
+                document.getElementById('entryGatewayModal').classList.add('hidden');
+                document.getElementById('roleBadge').textContent = "وضع المدير ⚙️";
+                document.getElementById('adminNavBtn').classList.remove('hidden');
+                switchSection('admin', document.getElementById('adminNavBtn'));
+            } else {
+                alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة!");
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('entryGatewayModal').classList.remove('hidden');
+            document.getElementById('gatewayAdminBox').classList.add('hidden');
+            document.getElementById('gatewayAdminUser').value = '';
+            document.getElementById('gatewayAdminPass').value = '';
+            switchSection('games', document.querySelector('.ps-nav-item'));
+        }
+
+        function updateAdminCredentials() {
+            const newU = document.getElementById('adminNewUsername').value.trim();
+            const newP = document.getElementById('adminNewPassword').value.trim();
+            if (!newU || !newP) { alert("يرجى ملء اسم المستخدم وكلمة المرور الجديدة!"); return; }
+            localStorage.setItem('nj_admin_user', newU);
+            localStorage.setItem('nj_admin_pass', newP);
+            document.getElementById('adminNewUsername').value = '';
+            document.getElementById('adminNewPassword').value = '';
+            alert("✅ تم حفظ اسم المستخدم وكلمة المرور الجديدة بنجاح!");
+        }
+
         function switchSection(secName, btn) {
-            ['games', 'mystery', 'repair'].forEach(s => {
+            ['games', 'repair', 'passport', 'garage', 'mystery', 'admin'].forEach(s => {
                 document.getElementById('sec-' + s).classList.add('hidden');
             });
             document.getElementById('sec-' + secName).classList.remove('hidden');
@@ -462,65 +780,226 @@
             document.querySelectorAll('.ps-nav-item').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
 
+            if (secName === 'garage') loadGarageData();
+            if (secName === 'admin') loadAdminOrdersTable();
             updateHddAndCart();
         }
 
-        // ==========================================
-        // REPAIR DIAGNOSTIC DATABASE
-        // ==========================================
-        const diagnosticDatabase = {
-            heat: {
-                cause: "ارتفاع حرارة المعالج بسبب جفاف المعجون الحراري وتراكم الأتربة داخل المشتت.",
-                price: "15,000 إلى 25,000 د.ع",
-                time: "45 إلى 60 دقيقة",
-                details: "تنظيف شامل، تبديل المعجون الحراري بأصلي (MX-4 / MX-7)، وفحص كفاءة المروحة."
-            },
-            power: {
-                cause: "تلف في دائرة الباور سبلاي الداخلية (Power Supply) أو احتراق مكثفات الحماية نتيجة تذبذب التيار.",
-                price: "25,000 إلى 45,000 د.ع",
-                time: "ساعة إلى ساعتين",
-                details: "فحص الباور سبلاي، إصلاح الدائرة أو استبدال القطع التالفة بقطع أصلية."
-            },
-            hdmi: {
-                cause: "تلف في آيسي الإخراج (HDMI Encoder IC) أو انحناء في دبابيس منفذ الـ HDMI بسبب الكابل.",
-                price: "30,000 إلى 50,000 د.ع",
-                time: "ساعتين إلى 3 ساعات",
-                details: "رفع المنفذ أو الآيسي التالف وتركيب قطعة جديدة أصلية مع إعادة اللحام بدقة."
-            },
-            hdd: {
-                cause: "وجود قطاعات تالفة (Bad Sectors) في الهاردسك أو تلف في ملفات نظام التشغيل (System Software).",
-                price: "10,000 د.ع (سوفتوير) أو حسب سعر الهارد الجديد",
-                time: "ساعة واحدة",
-                details: "فحص الهارد، إعادة تنصيب النظام (System Software) أو ترقية لـ SSD سريع."
-            },
-            stick: {
-                cause: "تآكل في تروس ومقاومات الأنالوج الداخلية بسبب الأوساخ (Stick Drift) أو تلف أشرطة التوصيل.",
-                price: "10,000 إلى 15,000 د.ع للقبضة",
-                time: "30 دقيقة",
-                details: "تبديل الأنالوج بقطعة مغناطيسية متطورة أو استبدال شريط الأزرار الداخلي (Ribbon Film)."
-            }
-        };
-
-        function runDiagnostic() {
-            const issueKey = document.getElementById('diagIssue').value;
-            const data = diagnosticDatabase[issueKey] || diagnosticDatabase['heat'];
-            document.getElementById('estCause').textContent = data.cause;
-            document.getElementById('estPrice').textContent = data.price;
-            document.getElementById('estTime').textContent = data.time;
-            document.getElementById('estDetails').textContent = data.details;
+        // Ticket & Orders Registry
+        function generateTicketId() {
+            let nextTicket = parseInt(localStorage.getItem('nj_next_ticket_id') || '501', 10);
+            const ticketStr = `#NJ-${nextTicket}`;
+            localStorage.setItem('nj_next_ticket_id', nextTicket + 1);
+            return ticketStr;
         }
 
-        function sendRepairWhatsApp() {
-            const dev = document.getElementById('diagDevice').options[document.getElementById('diagDevice').selectedIndex].text;
-            const iss = document.getElementById('diagIssue').options[document.getElementById('diagIssue').selectedIndex].text;
-            const price = document.getElementById('estPrice').textContent;
-            const msg = `مرحباً مركز النجوم، أرغب بحجز صيانة للجهاز:\n🎮 الجهاز: ${dev}\n⚠️ العطل: ${iss}\n💰 التكلفة التقديرية: ${price}`;
+        function saveOrderToAdminRegistry(ticketId, serviceType, mark, clientName) {
+            let orders = JSON.parse(localStorage.getItem('nj_admin_orders') || '[]');
+            orders.unshift({
+                ticketId, serviceType, mark: mark || 'بدون علامة',
+                clientName: clientName || 'زبون مركز النجوم',
+                status: 'قيد العمل بالورشة ⏳',
+                finalPrice: '0 د.ع',
+                date: new Date().toLocaleDateString('ar-IQ')
+            });
+            if (orders.length > 50) orders.pop();
+            localStorage.setItem('nj_admin_orders', JSON.stringify(orders));
+        }
+
+        function loadAdminOrdersTable() {
+            const orders = JSON.parse(localStorage.getItem('nj_admin_orders') || '[]');
+            const tbody = document.getElementById('adminOrdersTableBody');
+            if (orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">لا توجد أجهزة مسجلة حالياً...</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = orders.map((o, idx) => `
+                <tr class="border-b border-white/5 hover:bg-white/5 transition">
+                    <td class="p-3 font-black text-sky-400">${o.ticketId}</td>
+                    <td class="p-3 font-bold text-white">${o.serviceType}<br><span class="text-[10px] text-slate-400">${o.clientName}</span></td>
+                    <td class="p-3 text-amber-300">${o.mark}</td>
+                    <td class="p-3">
+                        <select onchange="updateOrderStatus(${idx}, this.value)" class="bg-slate-900 border border-slate-700 rounded-lg p-1 text-xs text-white">
+                            <option value="قيد العمل بالورشة ⏳" ${o.status.includes('قيد') ? 'selected' : ''}>قيد العمل ⏳</option>
+                            <option value="اكتمل بنجاح ✅" ${o.status.includes('اكتمل') ? 'selected' : ''}>اكتمل بنجاح ✅</option>
+                        </select>
+                        <input type="text" value="${o.finalPrice}" onchange="updateOrderPrice(${idx}, this.value)" placeholder="التكلفة (د.ع)" class="mt-1 w-24 bg-slate-900 border border-slate-700 rounded-lg p-1 text-xs text-amber-400 font-bold">
+                    </td>
+                    <td class="p-3 text-center">
+                        <button onclick="sendManagerWhatsApp(${idx})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow transition cursor-pointer">
+                            <i class="fa-brands fa-whatsapp"></i> إرسال إشعار التكلفة للزبون
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateOrderStatus(idx, val) {
+            let orders = JSON.parse(localStorage.getItem('nj_admin_orders') || '[]');
+            if (orders[idx]) { orders[idx].status = val; localStorage.setItem('nj_admin_orders', JSON.stringify(orders)); }
+        }
+
+        function updateOrderPrice(idx, val) {
+            let orders = JSON.parse(localStorage.getItem('nj_admin_orders') || '[]');
+            if (orders[idx]) { orders[idx].finalPrice = val; localStorage.setItem('nj_admin_orders', JSON.stringify(orders)); }
+        }
+
+        function sendManagerWhatsApp(idx) {
+            const orders = JSON.parse(localStorage.getItem('nj_admin_orders') || '[]');
+            const o = orders[idx];
+            if (!o) return;
+            let msg = `مرحباً ${o.clientName} 👋\nمن مركز النجوم للإلكترونيات (النجف الأشرف):\n\n🎫 تذكرتك: ${o.ticketId}\n🎮 الخدمة: ${o.serviceType}\n🏷️ العلامة الفارقة: ${o.mark}\n\n✅ الحالة: اكتمل الجهاز وصيانته بنجاح!\n💰 التكلفة الإجمالية النهائية: ${o.finalPrice}\n\nيسعدنا استلام جهازك الآن من المحل. أهلاً وسهلاً بك!`;
             window.open(`https://wa.me/9647840022295?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // ==========================================
-        // SECURE MYSTERY BOX & 5+ GAMES CONDITION
-        // ==========================================
+        // Console Passport
+        function generateConsolePassport() {
+            const name = document.getElementById('passName').value.trim();
+            const serial = document.getElementById('passSerial').value.trim();
+            if (!name || !serial) { alert("يرجى إدخال اسم المالك ورقم السيريال لجهازك!"); return; }
+            document.getElementById('resPassName').textContent = name;
+            document.getElementById('resPassSerial').textContent = serial;
+            document.getElementById('passDate').textContent = "التاريخ: " + new Date().toLocaleDateString('ar-IQ');
+            document.getElementById('passportResultArea').classList.remove('hidden');
+            saveToCustomerHistory(`إصدار بصمة الكونسول (${serial})`, `باسم: ${name}`);
+        }
+
+        // Storage Optimizer & Bundles
+        function optimizeStorageFit() {
+            selectedIds = [];
+            let currentGB = 0;
+            for (let g of gamesList) {
+                if (currentGB + g.size <= maxHdd) { selectedIds.push(g.id); currentGB += g.size; }
+                if (currentGB >= maxHdd - 25) break;
+            }
+            updateHddAndCart();
+            renderGames();
+            alert(`✨ تم اختيار تشكيلة متكاملة من ${selectedIds.length} لعبة لتملأ هاردك بـ (${currentGB} GB) بدقة تامة!`);
+        }
+
+        function selectGameBundle(type) {
+            selectedIds = [];
+            let matches = type === 'action' ? [89, 95, 71, 24, 201] : (type === 'arabic' ? [190, 158, 9, 12, 116] : [80, 68, 48, 93, 137]);
+            matches.forEach(id => { if (gamesList.some(g => g.id === id)) selectedIds.push(id); });
+            if (selectedIds.length < 5) selectedIds = gamesList.slice(0, 5).map(g => g.id);
+            updateHddAndCart();
+            renderGames();
+        }
+
+        function toggleDeliveryAddress() {
+            const isChecked = document.getElementById('deliveryCheck').checked;
+            const addrBox = document.getElementById('deliveryAddressBox');
+            if (isChecked) addrBox.classList.remove('hidden'); else addrBox.classList.add('hidden');
+        }
+
+        function calculateAdvancedRepair() {
+            const dev = document.getElementById('advDevice').value;
+            document.getElementById('summaryDeviceTitle').textContent = dev;
+            const checkboxes = document.querySelectorAll('#repairServicesList input[type="checkbox"]:checked');
+            const summaryDiv = document.getElementById('selectedServicesSummary');
+            const rangeSpan = document.getElementById('advTotalRange');
+
+            if (checkboxes.length === 0) {
+                summaryDiv.innerHTML = `<span class="text-slate-500">لم يتم تحديد أي خدمة صيانة بعد...</span>`;
+                rangeSpan.textContent = "0 د.ع";
+                return;
+            }
+            let minTotal = 0, maxTotal = 0, html = "";
+            checkboxes.forEach(cb => {
+                const min = parseInt(cb.dataset.min, 10);
+                const max = parseInt(cb.dataset.max, 10);
+                minTotal += min; maxTotal += max;
+                html += `<div class="flex justify-between items-center text-white"><span>✓ ${cb.value}</span><span class="text-amber-400 font-bold">${min.toLocaleString()} - ${max.toLocaleString()}</span></div>`;
+            });
+            summaryDiv.innerHTML = html;
+            rangeSpan.textContent = `${minTotal.toLocaleString()} إلى ${maxTotal.toLocaleString()} د.ع`;
+        }
+
+        let lastIssuedTicket = "";
+        let lastIssuedCode = "";
+
+        function sendAdvancedRepairWhatsApp() {
+            const dev = document.getElementById('advDevice').value;
+            const mark = document.getElementById('repairDeviceMark').value.trim();
+            const checkboxes = document.querySelectorAll('#repairServicesList input[type="checkbox"]:checked');
+            const isDelivery = document.getElementById('deliveryCheck').checked;
+            const address = document.getElementById('customerAddress').value.trim();
+            const totalText = document.getElementById('advTotalRange').textContent;
+
+            if (checkboxes.length === 0 && !isDelivery) { alert("يرجى اختيار خدمة صيانة واحدة على الأقل!"); return; }
+
+            const ticketId = generateTicketId();
+            let servicesList = [];
+            checkboxes.forEach(cb => servicesList.push(cb.value));
+
+            saveOrderToAdminRegistry(ticketId, `صيانة: ${dev} (${servicesList.join(' + ') || 'توصيل'})`, mark, 'زبون الصيانة');
+
+            let msg = `🎫 رقم التذكرة: ${ticketId}\nمرحباً مركز النجوم، طلب صيانة:\n🎮 الجهاز: ${dev}\n`;
+            if (mark) msg += `🏷️ العلامة الفارقة: ${mark}\n`;
+            if (servicesList.length > 0) {
+                msg += `🛠️ الخدمات:\n- ${servicesList.join('\n- ')}\n💰 التكلفة التقديرية: ${totalText}\n`;
+            }
+            if (isDelivery) {
+                msg += `🛵 طلب توصيل واستلام بالنجف!\n📍 العنوان: ${address || 'سيتم إرسال الموقع'}`;
+            }
+            saveToCustomerHistory(`صيانة (${ticketId}) - ${dev}`, servicesList.join(' + ') || 'توصيل جهاز');
+            window.open(`https://wa.me/9647840022295?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function savePreventiveCard() {
+            const name = document.getElementById('garageUserName').value.trim() || "زبون مركز النجوم";
+            const model = document.getElementById('garageDeviceModel').value.trim() || "PlayStation";
+            const today = new Date();
+            const nextDate = new Date();
+            nextDate.setMonth(today.getMonth() + 6);
+            const cardData = { name, model, issued: today.toLocaleDateString('ar-IQ'), nextDue: nextDate.toLocaleDateString('ar-IQ') };
+            localStorage.setItem('nj_preventive_card', JSON.stringify(cardData));
+            renderPreventiveCard();
+        }
+
+        function renderPreventiveCard() {
+            const raw = localStorage.getItem('nj_preventive_card');
+            const box = document.getElementById('preventiveTicketDisplay');
+            if (!raw) return;
+            const data = JSON.parse(raw);
+            box.innerHTML = `
+                <div class="text-right space-y-1">
+                    <div class="flex justify-between items-center border-b border-white/10 pb-1">
+                        <span class="text-[10px] text-emerald-400 font-black">✓ بطاقة وقاية نشطة</span>
+                        <span class="text-[10px] text-slate-400">${data.issued}</span>
+                    </div>
+                    <div class="text-sm font-black text-white">${data.name}</div>
+                    <div class="text-xs text-sky-300">الجهاز: ${data.model}</div>
+                    <div class="bg-amber-500/10 border border-amber-400/30 rounded-lg p-1.5 mt-2 text-center">
+                        <span class="text-[10px] text-amber-300 block">موعد التنظيف القادم:</span>
+                        <span class="text-xs font-black text-white">${data.nextDue}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function saveToCustomerHistory(title, details) {
+            let history = JSON.parse(localStorage.getItem('nj_customer_history') || '[]');
+            history.unshift({ title, details, date: new Date().toLocaleDateString('ar-IQ') + ' - ' + new Date().toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' }) });
+            if (history.length > 20) history.pop();
+            localStorage.setItem('nj_customer_history', JSON.stringify(history));
+        }
+
+        function loadGarageData() {
+            renderPreventiveCard();
+            const history = JSON.parse(localStorage.getItem('nj_customer_history') || '[]');
+            const container = document.getElementById('customerHistoryContainer');
+            if (history.length === 0) { container.innerHTML = `<p class="text-slate-500 text-center py-6">لا توجد طلبات مسجلة بعد...</p>`; return; }
+            container.innerHTML = history.map(item => `
+                <div class="bg-slate-900/90 border border-slate-800 p-3.5 rounded-2xl flex justify-between items-center">
+                    <div><span class="font-bold text-white block">${item.title}</span><span class="text-slate-400 text-[11px]">${item.details}</span></div>
+                    <span class="text-[10px] bg-sky-500/10 text-sky-300 px-2.5 py-1 rounded-lg border border-sky-400/20">${item.date}</span>
+                </div>
+            `).join('');
+        }
+
+        function clearHistory() { localStorage.removeItem('nj_customer_history'); loadGarageData(); }
+
         const giftPool = [
             "مبروك ربحت تحميل لعبة واحدة مجاناً! 🎮",
             "مبروك ربحت خصم 50% على تنزيل الألعاب! 🔥",
@@ -538,27 +1017,36 @@
             return generatedCode;
         }
 
-        let lastIssuedCode = "";
-
         function submitGamesWhatsApp() {
             if (selectedIds.length === 0) return;
             const chosen = gamesList.filter(g => selectedIds.includes(g.id));
             const prevCode = document.getElementById('orderPrevCode').value.trim();
+            const mark = document.getElementById('orderDeviceMark').value.trim();
+            const wantDelivery = document.getElementById('gamesDeliveryCheck').checked;
             
-            let msg = `قائمة الألعاب المطلوبة (${chosen.length} لعبة):\n`;
-            chosen.forEach((g, i) => { msg += `${i + 1}- ${g.name}\n`; });
-            if (prevCode) msg += `\nكود الهدية السابق: ${prevCode}`;
+            lastIssuedTicket = generateTicketId();
+            const totalIQD = chosen.length * 1000;
 
-            // الشرط: إذا كان عدد الألعاب 5 أو أكثر، يتم توليد كود هدية جديد
+            saveOrderToAdminRegistry(lastIssuedTicket, `تحميل ${chosen.length} لعبة (${totalIQD.toLocaleString()} د.ع)`, mark, 'زبون الألعاب');
+
+            let msg = `🎫 رقم التذكرة: ${lastIssuedTicket}\nقائمة الألعاب المطلوبة (${chosen.length} لعبة):\n`;
+            chosen.forEach((g, i) => { msg += `${i + 1}- ${g.name}\n`; });
+            msg += `💰 المبلغ الإجمالي: ${totalIQD.toLocaleString()} د.ع\n`;
+            if (mark) msg += `🏷️ العلامة الفارقة لجهازك: ${mark}\n`;
+            if (wantDelivery) msg += `🛵 أرغب بخدمة توصيل واستلام الجهاز داخل النجف\n`;
+            if (prevCode) msg += `كود الهدية السابق: ${prevCode}`;
+
+            saveToCustomerHistory(`طلب ألعاب (${lastIssuedTicket})`, `${chosen.length} لعبة`);
+
             if (chosen.length >= 5) {
                 lastIssuedCode = generateInfiniteCode();
-                msg += `\n🎁 كود الهدية الجديد (5 ألعاب فأكثر): ${lastIssuedCode}`;
-                
+                msg += `\n🎁 كود الهدية الجديد (نظام السفير): ${lastIssuedCode}`;
+                document.getElementById('issuedTicketDisplay').textContent = lastIssuedTicket;
                 document.getElementById('issuedCodeDisplay').textContent = lastIssuedCode;
                 document.getElementById('codeIssuedModal').classList.remove('hidden');
             } else {
-                // أقل من 5 ألعاب بدون كود
-                window.open(`https://wa.me/9647840022295?text=${encodeURIComponent(msg)}`, '_blank');
+                document.getElementById('issuedTicketDisplay').textContent = lastIssuedTicket;
+                document.getElementById('codeIssuedModal').classList.remove('hidden');
             }
         }
 
@@ -566,10 +1054,18 @@
             document.getElementById('codeIssuedModal').classList.add('hidden');
             const chosen = gamesList.filter(g => selectedIds.includes(g.id));
             const prevCode = document.getElementById('orderPrevCode').value.trim();
-            let msg = `قائمة الألعاب المطلوبة (${chosen.length} لعبة):\n`;
+            const mark = document.getElementById('orderDeviceMark').value.trim();
+            const wantDelivery = document.getElementById('gamesDeliveryCheck').checked;
+            const totalIQD = chosen.length * 1000;
+            
+            let msg = `🎫 رقم التذكرة: ${lastIssuedTicket}\nقائمة الألعاب المطلوبة (${chosen.length} لعبة):\n`;
             chosen.forEach((g, i) => { msg += `${i + 1}- ${g.name}\n`; });
-            if (prevCode) msg += `\nكود الهدية السابق: ${prevCode}`;
-            msg += `\n🎁 كود الهدية الجديد: ${lastIssuedCode}`;
+            msg += `💰 المبلغ الإجمالي: ${totalIQD.toLocaleString()} د.ع\n`;
+            if (mark) msg += `🏷️ العلامة الفارقة لجهازك: ${mark}\n`;
+            if (wantDelivery) msg += `🛵 أرغب بخدمة توصيل واستلام الجهاز داخل النجف\n`;
+            if (prevCode) msg += `كود الهدية السابق: ${prevCode}\n`;
+            if (chosen.length >= 5) msg += `🎁 كود الهدية الجديد: ${lastIssuedCode}`;
+
             window.open(`https://wa.me/9647840022295?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
@@ -580,34 +1076,21 @@
             const boxIcon = document.getElementById('boxIconState');
             const boxNavIcon = document.getElementById('boxNavIcon');
 
-            if (!codeInput) {
-                resArea.innerHTML = `<span class="text-rose-400 text-xs font-bold">يرجى كتابة الكود أولاً!</span>`;
-                return;
-            }
-
-            if (!/^NJ-[0-9]+$/.test(codeInput)) {
-                psClickSound();
-                resArea.innerHTML = `<span class="text-rose-400 text-xs font-bold">صيغة الكود غير صحيحة! يجب أن يبدأ بـ NJ- متبوعاً برقم.</span>`;
-                return;
-            }
-
+            if (!codeInput) { resArea.innerHTML = `<span class="text-rose-400 text-xs font-bold">يرجى كتابة الكود أولاً!</span>`; return; }
             let usedCodes = JSON.parse(localStorage.getItem('nj_used_codes') || '[]');
             if (usedCodes.includes(codeInput)) {
                 psClickSound();
-                resArea.innerHTML = `<span class="text-rose-400 text-xs font-bold">❌ تنبيه أمني: هذا الكود (${codeInput}) تم استخدامه مسبقاً ولا يمكن تكراره نهائياً!</span>`;
+                resArea.innerHTML = `<span class="text-rose-400 text-xs font-bold">❌ تنبيه أمني: هذا الكود تم استخدامه مسبقاً!</span>`;
                 return;
             }
-
-            const codeNum = parseInt(codeInput.split('-')[1], 10);
-            
+            const codeNum = parseInt(codeInput.split('-')[1] || '1', 10);
             if (codeNum % 5 === 0 || codeNum % 7 === 0) {
                 psClickSound();
                 usedCodes.push(codeInput);
                 localStorage.setItem('nj_used_codes', JSON.stringify(usedCodes));
-                resArea.innerHTML = `<span class="text-sky-300 text-xs font-bold mb-1">الكود (${codeInput}):</span><span class="text-slate-300 text-base font-bold">حظ أوفر في المرة القادمة 😅 (تم استهلاك هذا الكود).</span>`;
+                resArea.innerHTML = `<span class="text-sky-300 text-xs font-bold mb-1">الكود (${codeInput}):</span><span class="text-slate-300 text-base font-bold">حظ أوفر في المرة القادمة 😅</span>`;
                 return;
             }
-
             const wonPrize = giftPool[codeNum % giftPool.length];
             usedCodes.push(codeInput);
             localStorage.setItem('nj_used_codes', JSON.stringify(usedCodes));
@@ -618,17 +1101,13 @@
             psSuccessSound();
 
             resArea.innerHTML = `
-                <span class="text-xs text-sky-300 mb-1">تم فتح الصندوق بنجاح بواسطة الكود المؤمّن (${codeInput}) 🎉</span>
+                <span class="text-xs text-sky-300 mb-1">تم فتح الصندوق بنجاح (${codeInput}) 🎉</span>
                 <span class="text-emerald-400 text-base md:text-lg font-black">${wonPrize}</span>
-                <span class="text-[11px] text-amber-300 mt-1">⚠️ تم تعطيل هذا الكود نهائياً ولن يعمل مرة أخرى.</span>
             `;
-
             setTimeout(() => { visualBox.classList.remove('animate-unlock'); }, 600);
         }
 
-        // ==========================================
-        // GAMES LIST & OTHER FUNCTIONS
-        // ==========================================
+        // Games list (226)
         const gamesList = [
             { id: 1, name: "A Way Out", img: "A WAY 0UT=UP0006-CUSA07995_00.jpg", size: 22, cat: "action" },
             { id: 2, name: "Aaru's Awakening", img: "Aaru's Awakening (EU  US).jpg", size: 3, cat: "action" },
@@ -932,17 +1411,20 @@
             document.getElementById('statRem').textContent = remGB >= 0 ? `${remGB} GB` : `فائض ${Math.abs(remGB)} GB`;
             document.getElementById('statPrice').textContent = `${totalIQD.toLocaleString()} د.ع`;
 
+            const pct = Math.min((usedGB / maxHdd) * 100, 100);
+            document.getElementById('hddProgress').style.width = `${pct}%`;
+
             const promoNotice = document.getElementById('promoNotice');
             const barPromo = document.getElementById('barPromoStatus');
 
             if (count >= 5) {
-                promoNotice.innerHTML = `🎉 ممتاز! طلبك وصل ${count} ألعاب (ستحصل على كود هدية مجاني)`;
+                promoNotice.innerHTML = `🎉 ممتاز! طلبك وصل ${count} ألعاب (مؤهل لكود الهدية)`;
                 promoNotice.className = "text-emerald-400 font-bold";
-                barPromo.textContent = `🎁 مؤهل للحصول على كود هدية!`;
+                barPromo.textContent = `🎁 مؤهل لكود الهدية!`;
                 barPromo.className = "text-[11px] text-emerald-400 font-bold";
             } else {
                 const need = 5 - count;
-                promoNotice.innerHTML = `✨ أضف ${need} ألعاب أخرى لتحصل على كود هدية مجاني!`;
+                promoNotice.innerHTML = `✨ أضف ${need} ألعاب أخرى لتحصل على كود الهدية المجاني!`;
                 promoNotice.className = "text-amber-300 font-bold";
                 barPromo.textContent = `أضف ${need} ألعاب إضافية لكود الهدية`;
                 barPromo.className = "text-[11px] text-amber-300 font-bold";
@@ -954,7 +1436,8 @@
             document.getElementById('barSize').textContent = `${usedGB} GB`;
 
             const onGamesTab = !document.getElementById('sec-games').classList.contains('hidden');
-            if (count > 0 && onGamesTab) cartBar.classList.remove('translate-y-full');
+            const isGatewayOpen = !document.getElementById('entryGatewayModal').classList.contains('hidden');
+            if (count > 0 && onGamesTab && !isGatewayOpen) cartBar.classList.remove('translate-y-full');
             else cartBar.classList.add('translate-y-full');
         }
 
